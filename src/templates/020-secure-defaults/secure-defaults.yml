@@ -1,8 +1,9 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
 
+Parameters:
 
-
-
-
+  policy:
+    Type: String
 
 Resources:
 
@@ -25,8 +26,8 @@ Resources:
     Type: Community::Organizations::Policy
     OrganizationBinding: !Ref OrganizationsPolicyBinding
     Properties:
-      Content: !Ref aiOptOutPolicyContent
+      Content: !Ref policy
       Description: Opts out of AWS use of Stedi data for training ML models
       Name: GlobalAiOptOut
       PolicyType: AISERVICES_OPT_OUT_POLICY
-      TargetIds: !Ref rootOuPhysicalId
+      TargetIds: !Ref organizationPrincipalId

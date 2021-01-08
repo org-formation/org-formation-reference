@@ -58,3 +58,13 @@ EnableAWSServiceRP:
   OrganizationBinding:
     IncludeMasterAccount: true
     Region: us-east-1 # Organization policies are only ever compatible with us-east-1
+
+# registration of Community::IAM::PasswordPolicy
+PasswordPolicyRP:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-iam-passwordpolicy-0.2.0.zip
+  ResourceType: 'Community::IAM::PasswordPolicy'
+  MaxConcurrentTasks: 10
+  OrganizationBinding:
+    Region: !Ref primaryRegion
+    Account: "*"

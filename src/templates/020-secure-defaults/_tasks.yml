@@ -1,0 +1,25 @@
+
+SecureDefaults:
+  Type: update-stacks
+  Template: ./secure-defaults.yml
+  StackName: !Sub "${resourcePrefix}-secure-defaults"
+  StackDescription: Ensures AWS services are configured to be secure by default
+  MaxConcurrentStacks: 10
+  Parameters:
+    organizationPrincipalId: !Ref organizationPrincipalId
+    policy: !ReadFile ./resources/global-ai-optout-policy.json
+  OrganizationBindings:
+    AllRegionsBinding:
+      IncludeMasterAccount: true
+      Account: "*"
+      Region: !Ref allRegions
+    PrimaryRegionBinding:
+      IncludeMasterAccount: true
+      Account: "*"
+      Region: !Ref primaryRegion
+    OrganizationsPolicyBinding:
+      IncludeMasterAccount: true
+      Region: us-east-1
+    OrganizationsServiceAccessBinding:
+      IncludeMasterAccount: true
+      Region: us-east-1

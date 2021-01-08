@@ -7,6 +7,10 @@ primaryRegion:
   Type: String
   Default: us-east-1
 
+organizationPrincipalId:
+  Type: String
+  Default: !Ref ORG::PrincipalOrgID
+
 # sometimes you will need to deploy a task to all regions you allow. you can use this parameter to keep that list in 1 place
 allRegions:
   Type: List<String>
