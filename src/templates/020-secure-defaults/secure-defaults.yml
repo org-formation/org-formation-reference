@@ -21,13 +21,13 @@ Resources:
     OrganizationBinding: !Ref AllRegionsBinding
     Properties:
       EnableEbsEncryptionByDefault: true
-    
+
   AiOptOutPolicy:
     Type: Community::Organizations::Policy
     OrganizationBinding: !Ref OrganizationsPolicyBinding
     Properties:
       Content: !Ref policy
-      Description: Opts out of AWS use of Stedi data for training ML models
+      Description: Opts out of sharing data for AI training purposes
       Name: GlobalAiOptOut
       PolicyType: AISERVICES_OPT_OUT_POLICY
       TargetIds: !Ref organizationPrincipalId
