@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+Description: Default organization blueprint
+
+Organization:
+
+  ManagementAccount:
+    Type: OC::ORG::MasterAccount
+    Properties:
+      Alias: management-myorg # TODO change me
+      RootEmail: aws+management@myorg.com # TODO change me
+      AccountName: Management Account
+      AccountId: '111111111111'
+      Tags:
+        budget-alarm-threshold: 200
+        account-owner-email: me@myorg.com # TODO change me
+
+  OrganizationRoot:
+    Type: OC::ORG::OrganizationRoot
+    Properties:
+
+  ProductionOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: production
+      Accounts:
+
+  DevelopmentTeamOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: development-teams
+      Accounts:
+
+  SharedOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: shared
+      Accounts:
+        - !Ref ComplianceAccount
+        - !Ref OrgBuildAccount
+
+  ComplianceAccount:
+    Type: OC::ORG::Account
+    Properties:
+      Alias: compliance-myorg # TODO change me
+      AccountName: Compliance Account
+      RootEmail: aws+compliance@myorg.com # TODO change me
+      Tags:
+        budget-alarm-threshold: 200
+        account-owner-email: compliance@myorg.com # TODO change me
+
+  OrgBuildAccount:
+    Type: OC::ORG::Account
+    Properties:
+      Alias: org-build-myorg # TODO change me
+      AccountName: Organization Build Account
+      RootEmail: aws+org-build@myorg.com # TODO change me
+      Tags:
+        budget-alarm-threshold: 200
+        account-owner-email: org-build@myorg.com # TODO change me
+
+  # Team1Account:
+  #   Type: OC::ORG::Account
+  #   Properties:
+  #     Alias: team1-myorg # TODO change me
+  #     AccountName: Team 1 Account
+  #     RootEmail: aws+team1@myorg.com # TODO change me
+  #     Tags:
+  #       budget-alarm-threshold: 200
+  #       account-owner-email: team1@myorg.com # TODO change me
+  #       subdomain: team1     

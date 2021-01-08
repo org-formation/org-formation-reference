@@ -1,0 +1,60 @@
+# registration of Community::Organizations::NoDefaultVPC
+NoDefaultVpcRP:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-organizations-nodefaultvpc-0.1.0.zip
+  ResourceType: "Community::Organizations::NoDefaultVPC"
+  MaxConcurrentTasks: 100
+  OrganizationBinding:
+    Region: !Ref allRegions
+    Account: "*"
+    IncludeMasterAccount: true
+
+# registration of Community::Organizations::EbsEncryptionDefaults
+EbsEncryptionDefaultsRP:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-ec2-ebsencryptiondefaults-0.2.0.zip
+  ResourceType: "Community::Organizations::EbsEncryptionDefaults"
+  MaxConcurrentTasks: 100
+  OrganizationBinding:
+    IncludeMasterAccount: true
+    Account: "*"
+    Region: !Ref allRegions # Ebs Encryption Defaults need to be set in all regions.
+
+# registration of Community::Organizations::Policy
+OrganizationsPolicyRP:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-organizations-policy-0.1.0.zip
+  ResourceType: "Community::Organizations::Policy"
+  MaxConcurrentTasks: 100
+  OrganizationBinding:
+    IncludeMasterAccount: true
+    Region: us-east-1 # Organization policies are only ever compatible with us-east-1
+
+# registration of Community::S3::PublicAccessBlock
+AccountPublicAccessBlockRP:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-s3-publicaccessblock-0.2.0.zip
+  ResourceType: "Community::S3::PublicAccessBlock"
+  MaxConcurrentTasks: 100
+  OrganizationBinding:
+    IncludeMasterAccount: true
+    Account: "*"
+    Region: !Ref primaryRegion # Public Access Block is an account wide setting. This only needs to be installed to the primary region
+
+OrganizationsDelegatedAdminRP:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-organizations-delegatedadmin-0.1.0.zip
+  ResourceType: "Community::Organizations::DelegatedAdmin"
+  MaxConcurrentTasks: 100
+  OrganizationBinding:
+    IncludeMasterAccount: true
+    Region: us-east-1 # Organization policies are only ever compatible with us-east-1
+
+EnableAWSServiceRP:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-organizations-enableawsserviceaccess-0.1.0.zip
+  ResourceType: "Community::Organizations::EnableAWSServiceAccess"
+  MaxConcurrentTasks: 100
+  OrganizationBinding:
+    IncludeMasterAccount: true
+    Region: us-east-1 # Organization policies are only ever compatible with us-east-1
