@@ -1,18 +1,15 @@
-AWSTemplateFormatVersion: '2010-09-09'
-
+AWSTemplateFormatVersion: '2010-09-09-OC'
 
 Resources:
 
   AccessAnalyzerServiceAccess:
     Type: Community::Organizations::EnableAWSServiceAccess
-    OrganizationBinding: !Ref OrganizationsServiceAccessBinding
     Properties:
       ServicePrincipal: access-analyzer.amazonaws.com
 
   AccessAnalyzerDelegatedAdmin:
     Type: Community::Organizations::DelegatedAdmin
     DependsOn: AccessAnalyzerServiceAccess
-    OrganizationBinding: !Ref OrganizationsServiceAccessBinding
     Properties:
       ServicePrincipal: access-analyzer.amazonaws.com
       AccountId: !Ref SecurityAccount

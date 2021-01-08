@@ -57,14 +57,3 @@ Organization:
       Tags:
         budget-alarm-threshold: 200
         account-owner-email: org-build@myorg.com # TODO change me
-
-  # Team1Account:
-  #   Type: OC::ORG::Account
-  #   Properties:
-  #     Alias: team1-myorg # TODO change me
-  #     AccountName: Team 1 Account
-  #     RootEmail: aws+team1@myorg.com # TODO change me
-  #     Tags:
-  #       budget-alarm-threshold: 200
-  #       account-owner-email: team1@myorg.com # TODO change me
-  #       subdomain: team1     

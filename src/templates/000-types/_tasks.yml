@@ -1,3 +1,6 @@
+Parameters:
+  <<: !Include "../../task-parameters.yml"
+  
 # registration of Community::Organizations::NoDefaultVPC
 NoDefaultVpcRP:
   Type: register-type

@@ -1,5 +1,13 @@
+Parameters:
+  <<: !Include "./task-parameters.yml"
+
+OrganizationUpdate:
+  Type: update-organization
+  Template: ./organization.yml
+
 OrganizationBuild:
   Type: include
+  DependsOn: OrganizationUpdate
   Path: ./000-org-build/_tasks.yml
 
 Types:
@@ -7,7 +15,13 @@ Types:
   DependsOn: OrganizationBuild
   Path: ./000-types/_tasks.yml
 
+SCPs:
+  Type: include
+  DependsOn: [ OrganizationBuild, Types ]
+  Path: ./010-scps/_tasks.yml
+
 SecureDefaults:
   Type: include
-  DependsOn: Types
+  DependsOn: [ OrganizationBuild, Types ]
   Path: ./020-secure-defaults/_tasks.yml
+

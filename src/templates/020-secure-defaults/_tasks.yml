@@ -1,4 +1,6 @@
-
+Parameters:
+  <<: !Include "../../task-parameters.yml"
+  
 SecureDefaults:
   Type: update-stacks
   Template: ./secure-defaults.yml
@@ -7,7 +9,6 @@ SecureDefaults:
   MaxConcurrentStacks: 10
   Parameters:
     organizationPrincipalId: !Ref organizationPrincipalId
-    policy: !ReadFile ./resources/global-ai-optout-policy.json
   OrganizationBindings:
     AllRegionsBinding:
       IncludeMasterAccount: true
@@ -23,3 +24,26 @@ SecureDefaults:
     OrganizationsServiceAccessBinding:
       IncludeMasterAccount: true
       Region: us-east-1
+
+PasswordPolicy:
+  Type: update-stacks
+  Template: ./password-policy.yml
+  StackName: !Sub "${resourcePrefix}-password-policy"
+  MaxConcurrentStacks: 10
+  Parameters:
+    minimumPasswordLength: 24
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+    Account: "*"
+    Region: !Ref primaryRegion
+
+AccessAnalyzer:
+  Type: update-stacks
+  Template: ./access-analyzer.yml
+  StackName: !Sub "${resourcePrefix}-access-analyzer"
+  MaxConcurrentStacks: 10
+  Parameters:
+    minimumPasswordLength: 24
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+    Region: !Ref primaryRegion    
