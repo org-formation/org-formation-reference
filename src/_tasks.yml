@@ -1,0 +1,13 @@
+OrganizationBuild:
+  Type: include
+  Path: ./000-org-build/_tasks.yml
+
+Types:
+  Type: include
+  DependsOn: OrganizationBuild
+  Path: ./000-types/_tasks.yml
+
+SecureDefaults:
+  Type: include
+  DependsOn: Types
+  Path: ./020-secure-defaults/_tasks.yml
