@@ -1,11 +1,11 @@
 # if you use this resource prefix in all stacks deployed by this project they are easily identifiable
 resourcePrefix:
   Type: String
-  Default: myorg
+  Default: {{organization-name}}
 
 primaryRegion:
   Type: String
-  Default: us-east-1
+  Default: {{primary-aws-region}}
 
 organizationPrincipalId:
   Type: String
@@ -14,5 +14,5 @@ organizationPrincipalId:
 # sometimes you will need to deploy a task to all regions you allow. you can use this parameter to keep that list in 1 place
 allRegions:
   Type: List<String>
-  Default: 
-    - us-east-1
+  Default:
+    - {{primary-aws-region}}
