@@ -1,6 +1,6 @@
 Parameters:
-  <<: !Include "../../task-parameters.yml"
-  
+  <<: !Include "../../_parameters.yml"
+
 SecureDefaults:
   Type: update-stacks
   Template: ./secure-defaults.yml
@@ -46,4 +46,4 @@ AccessAnalyzer:
     minimumPasswordLength: 24
   DefaultOrganizationBinding:
     IncludeMasterAccount: true
-    Region: !Ref primaryRegion    
+    Region: !Ref primaryRegion

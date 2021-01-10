@@ -1,5 +1,5 @@
 Parameters:
-  <<: !Include "../../task-parameters.yml"
+  <<: !Include "../../_parameters.yml"
 
 DenyRootAccess:
   Type: update-stacks

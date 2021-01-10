@@ -1,3 +1,2 @@
 Parameters:
-  <<: !Include "../../task-parameters.yml"
-  
+  <<: !Include "../../_parameters.yml"
