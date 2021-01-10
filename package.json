@@ -1,0 +1,31 @@
+{
+  "name": "org-formation-reference",
+  "version": "0.1.0",
+  "description": "reference landing zone based on org-formation and aws best practices",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/org-formation/org-formation-reference.git"
+  },
+  "keywords": [
+    "org-formation",
+    "control",
+    "tower",
+    "landing",
+    "zone",
+    "aws",
+    "dev-ops"
+  ],
+  "author": "org-formation",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/org-formation/org-formation-reference/issues"
+  },
+  "homepage": "https://github.com/org-formation/org-formation-reference#readme",
+  "dependencies": {
+    "aws-organization-formation": "^0.9.14-beta.19"
+  }
+}
