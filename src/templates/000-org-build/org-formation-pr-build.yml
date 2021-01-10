@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Organization Formation setup for CodeCommit, CodeBuild and CodePipeline'
+
+Parameters:
+
+  resourcePrefix:
+    Type: String
+    Default: orgformation
+
+  sourceLocation:
+    Type: String
+
+Resources:
+  OrgBuildLogGroup:
+    Type: 'AWS::Logs::LogGroup'
+    Properties:
+      RetentionInDays: 7
+      LogGroupName: !Sub '/codebuild/${resourcePrefix}-pr-build'
+
+  OrgBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AdministratorAccess' # see: https://github.com/org-formation/org-formation-cli/blob/master/docs/least-priviledge.md
+
+  OrgBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub '${resourcePrefix}-pr-build'
+      Description: AWS Organization Formation PR Build Project
+      Artifacts: { Type: NO_ARTIFACTS }
+      Environment:
+        Type: LINUX_CONTAINER
+        Image: aws/codebuild/standard:4.0
+        ComputeType: BUILD_GENERAL1_SMALL
+        ImagePullCredentialsType: CODEBUILD
+      QueuedTimeoutInMinutes: 480
+      ServiceRole: !Ref OrgBuildRole
+      Source:
+        GitCloneDepth: 1
+        Location: !Ref sourceLocation
+        Type: CODECOMMIT
+        ReportBuildStatus: true
+        BuildSpec: buildspec.pr.yml
+      LogsConfig:
+        CloudWatchLogs:
+          GroupName: !Ref OrgBuildLogGroup
+          Status: ENABLED
+      SourceVersion: refs/heads/master
+      TimeoutInMinutes: 180
