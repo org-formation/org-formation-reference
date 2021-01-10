@@ -7,7 +7,7 @@ phases:
       - npx org-formation -v
   build:
     commands:
-      - npx org-formation perform-tasks ./src/_tasks.yml --no-color --max-concurrent-stacks 50 --max-concurrent-tasks 1
+      - npm run perform-tasks --  --no-color
   post_build:
     commands:
       - echo Build completed

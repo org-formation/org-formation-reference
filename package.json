@@ -4,7 +4,11 @@
   "description": "reference landing zone based on org-formation and aws best practices",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "print-tasks": "npx org-formation print-tasks ./src/_tasks.yml --output yaml --max-concurrent-stacks 100 --max-concurrent-tasks 100",
+    "perform-tasks":"npx org-formation perform-tasks ./src/_tasks.yml --max-concurrent-stacks 50 --max-concurrent-tasks 1",
+    "validate-tasks": "npx org-formation validate-tasks ./src/_tasks.yml --failed-tasks-tolerance 0  --max-concurrent-stacks 100 --max-concurrent-tasks 100",
+    "cfn-lint": "cfn-lint ./.printed-stacks/**/%*.yaml -i W2001,E3001,E1019,W1020,W2509,E3021"
   },
   "repository": {
     "type": "git",
