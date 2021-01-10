@@ -1,0 +1,13 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - npm ci
+      - echo installed dependencies
+      - npx org-formation -v
+      - pip install cfn-lint
+  build:
+    commands:
+      - npx org-formation print-tasks ./src/_tasks.yml --no-color --output yaml --max-concurrent-stacks 100 --max-concurrent-tasks 100
+      - npx org-formation validate-tasks ./src/_tasks.yml  --no-color --failed-tasks-tolerance 0  --max-concurrent-stacks 100 --max-concurrent-tasks 100
+      - cfn-lint ./.printed-stacks/**/%*.yaml -i W2001,E3001,E1019,W1020,W2509,E3021

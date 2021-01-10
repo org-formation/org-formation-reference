@@ -1,0 +1,4 @@
+organizationFile = ./src/organization.yml
+masterAccountId = XXXXX
+stateObject = zzzzzz
+stateBucketName = yyyyyy
