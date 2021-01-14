@@ -1,0 +1,2 @@
+Parameters:
+  <<: !Include "../../_parameters.yml"
