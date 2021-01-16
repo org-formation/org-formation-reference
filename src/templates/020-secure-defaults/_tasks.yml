@@ -10,18 +10,15 @@ SecureDefaults:
   Parameters:
     organizationPrincipalId: !Ref organizationPrincipalId
   OrganizationBindings:
-    AllRegionsBinding:
+    AllAccountsAllRegionsBinding:
       IncludeMasterAccount: true
       Account: "*"
       Region: !Ref allRegions
-    PrimaryRegionBinding:
+    AllAccountsPrimaryRegionBinding:
       IncludeMasterAccount: true
       Account: "*"
       Region: !Ref primaryRegion
-    OrganizationsPolicyBinding:
-      IncludeMasterAccount: true
-      Region: us-east-1
-    OrganizationsServiceAccessBinding:
+    ManagementAccountPrimaryRegionBinding:
       IncludeMasterAccount: true
       Region: us-east-1
 

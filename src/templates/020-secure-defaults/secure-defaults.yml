@@ -4,7 +4,7 @@ Resources:
 
   S3AccountPublicAccessBlock:
     Type: "Community::S3::PublicAccessBlock"
-    OrganizationBinding: !Ref PrimaryRegionBinding
+    OrganizationBinding: !Ref AllAccountsPrimaryRegionBinding
     Properties:
       BlockPublicAcls: true
       BlockPublicPolicy: true
@@ -13,16 +13,16 @@ Resources:
 
   EbsEncryptionDefaults:
     Type: "Community::Organizations::EbsEncryptionDefaults"
-    OrganizationBinding: !Ref AllRegionsBinding
+    OrganizationBinding: !Ref AllAccountsAllRegionsBinding
     Properties:
       EnableEbsEncryptionByDefault: true
 
   AiOptOutPolicy:
     Type: Community::Organizations::Policy
-    OrganizationBinding: !Ref OrganizationsPolicyBinding
+    OrganizationBinding: !Ref ManagementAccountPrimaryRegionBinding
     Properties:
-      Content: !ReadFile ./resources/global-ai-optout-policy.json
+      Content: !ReadFile ./resources/ai-trainig-optout-policy.json
       Description: Opts out of sharing data for AI training purposes
-      Name: GlobalAiOptOut
+      Name: AiTrainingOptOut
       PolicyType: AISERVICES_OPT_OUT_POLICY
       TargetIds: !Ref organizationPrincipalId
