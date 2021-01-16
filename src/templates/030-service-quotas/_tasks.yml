@@ -1,2 +1,7 @@
 Parameters:
   <<: !Include "../../_parameters.yml"
+
+ServiceQuotas:
+  Type: update-stacks
+  Template: ./service-quotas.yml
+  StackName: !Sub "${resourcePrefix}-service-quotas"

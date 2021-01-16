@@ -67,7 +67,40 @@ PasswordPolicyRP:
   Type: register-type
   SchemaHandlerPackage: s3://community-resource-provider-catalog/community-iam-passwordpolicy-0.2.0.zip
   ResourceType: 'Community::IAM::PasswordPolicy'
-  MaxConcurrentTasks: 10
+  MaxConcurrentTasks: 100
   OrganizationBinding:
     Region: !Ref primaryRegion
     Account: "*"
+
+# registration of Community::ServiceQuotas::S3
+S3ServiceQuotas:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-servicequotas-s3-0.1.0.zip
+  ResourceType: "Community::ServiceQuotas::S3"
+  MaxConcurrentTasks: 100
+  OrganizationBinding:
+    IncludeMasterAccount: true
+    Account: "*"
+    Region: !Ref allRegions
+
+# registration of Community::ServiceQuotas::CloudFormation
+CloudFormationServiceQuotas:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-servicequotas-cloudformation-0.1.0.zip
+  ResourceType: "Community::ServiceQuotas::CloudFormation"
+  MaxConcurrentTasks: 100
+  OrganizationBinding:
+    IncludeMasterAccount: true
+    Account: "*"
+    Region: !Ref allRegions
+
+# registration of Community::ServiceQuotas::DynamoDB
+ServiceQuotasDynamoDBRP:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-servicequotas-dynamodb-0.1.0.zip
+  ResourceType: "Community::ServiceQuotas::DynamoDB"
+  MaxConcurrentTasks: 100
+  OrganizationBinding:
+    IncludeMasterAccount: true
+    Account: "*"
+    Region: !Ref allRegions

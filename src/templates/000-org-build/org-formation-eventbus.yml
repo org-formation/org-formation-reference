@@ -22,7 +22,7 @@ Resources:
             - "events:PutTargets"
             - "events:RemoveTargets"
         Resource:
-            - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/default/*
+            - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/*
         Condition:
             StringEqualsIfExists:
                 "events:creatorAccount" : "${aws:PrincipalAccount}"
