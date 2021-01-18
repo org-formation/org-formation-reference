@@ -93,3 +93,14 @@ CloudFormationServiceQuotas:
     IncludeMasterAccount: true
     Account: "*"
     Region: !Ref allRegions
+
+# registration of Community::ServiceQuotas::DynamoDB
+ServiceQuotasDynamoDBRP:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-servicequotas-dynamodb-0.1.0.zip
+  ResourceType: "Community::ServiceQuotas::DynamoDB"
+  MaxConcurrentTasks: 100
+  OrganizationBinding:
+    IncludeMasterAccount: true
+    Account: "*"
+    Region: !Ref allRegions
