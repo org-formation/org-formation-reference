@@ -1,2 +1,17 @@
 Parameters:
   <<: !Include "../../_parameters.yml"
+
+GuardDuty:
+  Type: update-stacks
+  Template: ./guardduty.yml
+  StackName: !Sub "${resourcePrefix}-guardduty"
+  Parameters:
+    bucketName: !Sub "guardduty-${LoggingAccount}"
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  GuardDutyBucketBinding:
+    Account: !Ref LoggingAccount
+  GuardDutyMasterBinding:
+    Account: !Ref SecurityAccount
+  GuardDutyMemberBinding:
+    Account: "*"
+    IncludeMasterAccount: true

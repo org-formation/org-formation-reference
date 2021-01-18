@@ -1,2 +1,15 @@
 Parameters:
   <<: !Include "../../_parameters.yml"
+
+CloudTrail:
+  Type: update-stacks
+  Template: ./cloudtrail.yml
+  StackName: !Sub "${resourcePrefix}-cloudtrail"
+  Parameters:
+    bucketName: !Sub "cloudtrail-${LoggingAccount}"
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  CloudTrailBucketBinding:
+    Account: !Ref LoggingAccount
+  CloudTrailBinding:
+    Account: "*"
+    IncludeMasterAccount: true

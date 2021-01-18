@@ -8,20 +8,50 @@ OrganizationUpdate:
 OrganizationBuild:
   Type: include
   DependsOn: OrganizationUpdate
-  Path: ./000-org-build/_tasks.yml
+  Path: ./templates/000-org-build/_tasks.yml
 
 Types:
   Type: include
   DependsOn: OrganizationBuild
-  Path: ./000-types/_tasks.yml
+  Path: ./templates/000-types/_tasks.yml
 
 SCPs:
   Type: include
   DependsOn: [ OrganizationBuild, Types ]
-  Path: ./010-scps/_tasks.yml
+  Path: ./templates/010-scps/_tasks.yml
 
 SecureDefaults:
   Type: include
   DependsOn: [ OrganizationBuild, Types ]
-  Path: ./020-secure-defaults/_tasks.yml
+  Path: ./templates/020-secure-defaults/_tasks.yml
+
+ServiceQuotas:
+  Type: include
+  DependsOn: [ OrganizationBuild, Types ]
+  Path: ./templates/030-service-quotas/_tasks.yml
+
+Budgets:
+  Type: include
+  DependsOn: [ OrganizationBuild ]
+  Path: ./templates/040-budgets/_tasks.yml
+
+AccountCreation:
+  Type: include
+  DependsOn: [ OrganizationBuild ]
+  Path: ./templates/050-account-creation/_tasks.yml
+
+CloudTrail:
+  Type: include
+  DependsOn: [ OrganizationBuild ]
+  Path: ./templates/060-cloud-trail/_tasks.yml
+
+GuardDuty:
+  Type: include
+  DependsOn: [ OrganizationBuild, Types ]
+  Path: ./templates/070-guard-duty/_tasks.yml
+
+AwsConfigInventory:
+  Type: include
+  DependsOn: [ OrganizationBuild, Types ]
+  Path: ./templates/080-aws-config-inventory/_tasks.yml
 
