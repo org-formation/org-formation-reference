@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: "2010-09-09-OC"
+
+Parameters:
+  resourcePrefix:
+    Type: String
+
+Resources:
+
+  # note that changing some attributes on Budget resources will result in an error.
+  # this unfortunately is a cloudformation error described here: https://github.com/aws-cloudformation/aws-cloudformation-coverage-roadmap/issues/365
+  # workaround is to delete the budget resource and then re-add it.
+  Budget:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetName: !Sub "${resourcePrefix}-budget-${AWSAccount.Alias}" # AWSAccount.Alias resolves to IAM Alias of current account
+        BudgetLimit:
+          Amount: !GetAtt AWSAccount.Tags.budget-alarm-threshold # Resolves to value of tag of current account
+          Unit: USD
+        TimeUnit: MONTHLY
+        BudgetType: COST
+        CostTypes:
+          IncludeSupport: false
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !GetAtt AWSAccount.Tags.budget-alarm-threshold-email-recipient
+        - Notification:
+            NotificationType: FORECASTED
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !GetAtt AWSAccount.Tags.budget-alarm-threshold-email-recipient
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !GetAtt AWSAccount.Tags.budget-alarm-threshold-email-recipient

@@ -1,2 +1,17 @@
 Parameters:
   <<: !Include "../../_parameters.yml"
+
+AwsConfigInventory:
+  Type: update-stacks
+  Template: ./aws-config-inventory.yml
+  StackName: !Sub "${resourcePrefix}-aws-config-inventory"
+  Parameters:
+    bucketName: !Sub "aws-config-inventory-${LoggingAccount}"
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  AwsConfigBucketBinding:
+    Account: !Ref LoggingAccount
+  AwsConfigMasterBinding:
+    Account: !Ref SecurityAccount
+  AwsConfigMemberBinding:
+    Account: "*"
+    IncludeMasterAccount: true

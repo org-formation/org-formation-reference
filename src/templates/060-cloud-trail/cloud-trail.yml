@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: "2010-09-09-OC"
+
+OrganizationBindings:
+  # Binding for: S3Bucket, S3BucketPolicy
+  CloudTrailBucketBinding:
+
+  # Binding for: CloudTrail, CloudTrailLogGroup, CloudTrailLogGroupRole
+  CloudTrailBinding:
+
+Parameters:
+  bucketName:
+    Type: String
+
+Resources:
+  CloudTrailS3Bucket:
+    OrganizationBinding: !Ref CloudTrailBucketBinding
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref bucketName
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+
+  CloudTrailS3BucketPolicy:
+    OrganizationBinding: !Ref CloudTrailBucketBinding
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref CloudTrailS3Bucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "AWSCloudTrailAclCheck"
+            Effect: "Allow"
+            Principal: { Service: "cloudtrail.amazonaws.com" }
+            Action: "s3:GetBucketAcl"
+            Resource: !Sub "arn:aws:s3:::${CloudTrailS3Bucket}"
+          - Sid: "AWSCloudTrailWrite"
+            Effect: "Allow"
+            Principal: { Service: "cloudtrail.amazonaws.com" }
+            Action: "s3:PutObject"
+            Resource: !Sub "arn:aws:s3:::${CloudTrailS3Bucket}/AWSLogs/*/*"
+            Condition:
+              StringEquals:
+                s3:x-amz-acl: "bucket-owner-full-control"
+
+  CloudTrail:
+    OrganizationBinding: !Ref CloudTrailBinding
+    Type: AWS::CloudTrail::Trail
+    DependsOn:
+      - CloudTrailS3BucketPolicy
+    Properties:
+      S3BucketName: !Ref CloudTrailS3Bucket
+      IncludeGlobalServiceEvents: true
+      IsMultiRegionTrail: true
