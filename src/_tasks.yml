@@ -1,5 +1,5 @@
 Parameters:
-  <<: !Include "./_parameters.yml"
+  <<: !Include './_parameters.yml'
 
 OrganizationUpdate:
   Type: update-organization
@@ -13,9 +13,9 @@ OrganizationBuild:
 Types:
   Type: include
   DependsOn: OrganizationBuild
-  Path: ./templates/000-types/_tasks.yml
+  Path: ./templates/005-types/_tasks.yml
 
-SCPs:
+SeviceControlPolicies:
   Type: include
   DependsOn: [ OrganizationBuild, Types ]
   Path: ./templates/010-scps/_tasks.yml
@@ -54,4 +54,3 @@ AwsConfigInventory:
   Type: include
   DependsOn: [ OrganizationBuild, Types ]
   Path: ./templates/080-aws-config-inventory/_tasks.yml
-
