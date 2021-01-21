@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+
+Parameters:
+
+  instanceArn:
+    Type: String
+
+  principalId:
+    Type: String
+
+  permissionSetArn:
+    Type: String
+    Default: ''
+
+  permissionSetName:
+    Type: String
+    Default: AdministratorAccess
+
+  managedPolicies:
+    Type: CommaDelimitedList
+    Default: arn:aws:iam::aws:policy/AdministratorAccess
+
+  sessionDuration:
+    Type: String
+    Default: PT1H
+
+  masterAccountId:
+    Type: String
+    Default: ''
+
+Conditions:
+
+  includePermissionSet: !Equals [ '', !Ref permissionSetArn ]
+  includeMaster: !Not [ !Equals [ '', !Ref masterAccountId ] ]
+
+Resources:
+
+  PermissionSet:
+    Type: AWS::SSO::PermissionSet
+    Condition: includePermissionSet
+    Properties:
+      Name: !Ref permissionSetName
+      Description: !Sub '${permissionSetName} access to AWS organization'
+      InstanceArn: !Ref instanceArn
+      ManagedPolicies: !Ref managedPolicies
+      SessionDuration: !Ref sessionDuration
+
+  AssignmentMaster:
+    Type: AWS::SSO::Assignment
+    Condition: includeMaster
+    Properties:
+      InstanceArn: !Ref instanceArn
+      PermissionSetArn: !If [ includePermissionSet, !GetAtt PermissionSet.PermissionSetArn, !Ref permissionSetArn ]
+      PrincipalId: !Ref principalId
+      PrincipalType: GROUP
+      TargetType: AWS_ACCOUNT
+      TargetId: !Ref masterAccountId
+
+  AssignmentGroup:
+    Type: Community::SSO::AssignmentGroup
+    Properties:
+      InstanceArn: !Ref instanceArn
+      PermissionSets:
+        - !If [ includePermissionSet, !GetAtt PermissionSet.PermissionSetArn, !Ref permissionSetArn ]
+      PrincipalId: !Ref principalId
+      PrincipalType: GROUP
+      Targets:
+        - TargetType: AWS_ACCOUNT
+          TargetIds: Fn::EnumTargetAccounts TargetBinding ${account}
+
+Outputs:
+  PermissionSetArn:
+    Value: !If [ includePermissionSet, !GetAtt PermissionSet.PermissionSetArn, !Ref permissionSetArn ]
+    Export:
+      Name: !Sub ${AWS::StackName}-permission-set-arn

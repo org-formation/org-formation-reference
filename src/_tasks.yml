@@ -54,3 +54,8 @@ AwsConfigInventory:
   Type: include
   DependsOn: [ OrganizationBuild, Types ]
   Path: ./templates/080-aws-config-inventory/_tasks.yml
+
+AwsSso:
+  Type: include
+  DependsOn: [ OrganizationBuild, Types ]
+  Path: ./templates/100-aws-sso/_tasks.yml
