@@ -1,10 +1,15 @@
 AWSTemplateFormatVersion: '2010-09-09-OC'
 
+Parameters:
+
+  targetIds:
+    Type: CommaDelimitedList
+
 Resources:
 
   S3AccountPublicAccessBlock:
-    Type: "Community::S3::PublicAccessBlock"
-    OrganizationBinding: !Ref AllAccountsPrimaryRegionBinding
+    Type: Community::S3::PublicAccessBlock
+    OrganizationBinding: !Ref PrimaryRegionBinding
     Properties:
       BlockPublicAcls: true
       BlockPublicPolicy: true
@@ -12,17 +17,17 @@ Resources:
       RestrictPublicBuckets: true
 
   EbsEncryptionDefaults:
-    Type: "Community::Organizations::EbsEncryptionDefaults"
-    OrganizationBinding: !Ref AllAccountsAllRegionsBinding
+    Type: Community::Organizations::EbsEncryptionDefaults
+    OrganizationBinding: !Ref AllRegionsBinding
     Properties:
       EnableEbsEncryptionByDefault: true
 
   AiOptOutPolicy:
     Type: Community::Organizations::Policy
-    OrganizationBinding: !Ref ManagementAccountPrimaryRegionBinding
+    OrganizationBinding: !Ref OrganizationsPolicyBinding
     Properties:
-      Content: !ReadFile ./resources/ai-trainig-optout-policy.json
+      Content: !ReadFile ./resources/global-ai-optout-policy.json
       Description: Opts out of sharing data for AI training purposes
-      Name: AiTrainingOptOut
+      Name: GlobalAiOptOut
       PolicyType: AISERVICES_OPT_OUT_POLICY
-      TargetIds: !Ref organizationPrincipalId
+      TargetIds: !Ref targetIds

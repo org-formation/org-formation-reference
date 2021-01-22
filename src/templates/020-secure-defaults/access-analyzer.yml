@@ -1,4 +1,9 @@
-AWSTemplateFormatVersion: '2010-09-09-OC'
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  targetId:
+    Type: String
 
 Resources:
 
@@ -12,4 +17,4 @@ Resources:
     DependsOn: AccessAnalyzerServiceAccess
     Properties:
       ServicePrincipal: access-analyzer.amazonaws.com
-      AccountId: !Ref SecurityAccount
+      AccountId: !Ref targetId
