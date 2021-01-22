@@ -10,4 +10,3 @@ Resources:
       Name: DenyRootAll
       PolicyType: SERVICE_CONTROL_POLICY
       TargetIds: Fn::EnumTargetAccounts ScpTargetAccountBinding ${account}
-
