@@ -9,4 +9,5 @@ Resources:
       Description: Restricts the use of the Root account
       Name: DenyRootAll
       PolicyType: SERVICE_CONTROL_POLICY
-      TargetIds: Fn::EnumTargetAccounts ScpTargetAccountBinding ${account}
+      TargetIds:
+        - Fn::EnumTargetAccounts ScpTargetAccountBinding ${account}
