@@ -1,8 +1,20 @@
-AWSTemplateFormatVersion: "2010-09-09-OC"
+AWSTemplateFormatVersion: '2010-09-09'
 
 Parameters:
+
   resourcePrefix:
     Type: String
+    Default: orgformation
+
+  accountAlias:
+    Type: String
+
+  emailAddress:
+    Type: String
+
+  budgetAmount:
+    Type: Number
+    Default: 50
 
 Resources:
 
@@ -13,9 +25,9 @@ Resources:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
-        BudgetName: !Sub "${resourcePrefix}-budget-${AWSAccount.Alias}" # AWSAccount.Alias resolves to IAM Alias of current account
+        BudgetName: !Sub '${resourcePrefix}-budget-${accountAlias}'
         BudgetLimit:
-          Amount: !GetAtt AWSAccount.Tags.budget-alarm-threshold # Resolves to value of tag of current account
+          Amount: !Ref budgetAmount
           Unit: USD
         TimeUnit: MONTHLY
         BudgetType: COST
@@ -29,7 +41,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - SubscriptionType: EMAIL
-              Address: !GetAtt AWSAccount.Tags.budget-alarm-threshold-email-recipient
+              Address: !Ref emailAddress
         - Notification:
             NotificationType: FORECASTED
             ComparisonOperator: GREATER_THAN
@@ -37,7 +49,7 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - SubscriptionType: EMAIL
-              Address: !GetAtt AWSAccount.Tags.budget-alarm-threshold-email-recipient
+              Address: !Ref emailAddress
         - Notification:
             NotificationType: ACTUAL
             ComparisonOperator: GREATER_THAN
@@ -45,4 +57,4 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - SubscriptionType: EMAIL
-              Address: !GetAtt AWSAccount.Tags.budget-alarm-threshold-email-recipient
+              Address: !Ref emailAddress

@@ -1,10 +1,16 @@
 Parameters:
-  <<: !Include "../../_parameters.yml"
+  <<: !Include '../../_parameters.yml'
 
-Budgets:
+BudgetAlarms:
   Type: update-stacks
-  Template: ./budgets.yml
-  StackName: !Sub "${resourcePrefix}-budgets"
+  Template: ./budget-alarms.yml
+  StackName: !Sub '${resourcePrefix}-billing-alarm'
+  TerminationProtection: false
   DefaultOrganizationBinding:
-    AccountsWithTag: service-quotas-s3-buckets
     Region: !Ref primaryRegion
+    AccountsWithTag: budget-alarm-threshold
+  Parameters:
+    resourcePrefix: !Ref resourcePrefix
+    accountAlias: !GetAtt CurrentAccount.Alias
+    budgetAmount: !GetAtt CurrentAccount.Tags.budget-alarm-threshold
+    emailAddress: !GetAtt CurrentAccount.Tags.budget-alarm-threshold-email-recipient
