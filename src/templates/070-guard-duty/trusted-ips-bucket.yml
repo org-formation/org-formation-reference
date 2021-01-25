@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  resourcePrefix:
+    Type: String
+
+  bucketName:
+    Type: String
+
+Resources:
+  TrustedIpsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Ref bucketName
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  TrustedIpsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref TrustedIpsBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: GuardDutyRead
+            Effect: Allow
+            Principal:
+              Service: guardduty.amazonaws.com
+            Action:
+              - s3:GetObject
+            Resource: !Sub '${TrustedIpsBucket.Arn}/trusted_ips.txt'
+
+Outputs:
+  BucketName:
+    Value: !Ref TrustedIpsBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-name'
