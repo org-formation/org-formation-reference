@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  resourcePrefix:
+    Type: String
+    Default: orgformation
+
+  bucketName:
+    Type: String
+
+Resources:
+  CentralConfigAuditBucket:
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref bucketName
+      AccessControl: BucketOwnerFullControl
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  CentralConfigAuditBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref CentralConfigAuditBucket
+      PolicyDocument: # Taken from https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-policy.html#granting-access-in-another-account
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AWSConfigBucketPermissionsCheck
+            Effect: Allow
+            Principal:
+              Service:
+                - config.amazonaws.com
+            Action: s3:GetBucketAcl
+            Resource: !GetAtt CentralConfigAuditBucket.Arn
+          - Sid: AWSConfigBucketExistenceCheck
+            Effect: Allow
+            Principal:
+              Service:
+                - config.amazonaws.com
+            Action: s3:ListBucket
+            Resource: !GetAtt CentralConfigAuditBucket.Arn
+          - Sid: AWSConfigBucketDelivery
+            Effect: Allow
+            Principal:
+              Service:
+                - config.amazonaws.com
+            Action: s3:PutObject
+            Resource: !Sub '${CentralConfigAuditBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                's3:x-amz-acl': 'bucket-owner-full-control'
+
+Outputs:
+  BucketName:
+    Value: !Ref CentralConfigAuditBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-name'

@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  resourcePrefix:
+    Type: String
+
+  bucketName:
+    Type: String
+    Description: 'Name of the central S3 bucket containing AWS Config audit findings'
+
+Resources:
+  ConfigurationRecorder:
+    Type: 'AWS::Config::ConfigurationRecorder'
+    Properties:
+      RecordingGroup:
+        AllSupported: true
+        IncludeGlobalResourceTypes: true
+      RoleARN: !GetAtt 'ConfigurationRecorderRole.Arn'
+
+  DeliveryChannel:
+    Type: 'AWS::Config::DeliveryChannel'
+    Properties:
+      ConfigSnapshotDeliveryProperties:
+        DeliveryFrequency: One_Hour
+      S3BucketName: !Ref bucketName
+      SnsTopicARN: !Ref ConfigTopic
+
+  ConfigTopic:
+    Type: 'AWS::SNS::Topic'
+    Properties: 
+      DisplayName: !Sub 'AWS Config Findings for account ${AWS::AccountId}'
+      FifoTopic: false
+      TopicName: !Sub '${resourcePrefix}-config-finding-${AWS::AccountId}'
+      
+  ConfigurationRecorderRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      ManagedPolicyArns:
+      - 'arn:aws:iam::aws:policy/service-role/AWSConfigRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: AssumeRole1
+          Effect: Allow
+          Principal:
+            Service: 'config.amazonaws.com'
+          Action: 'sts:AssumeRole'
+      Policies:
+      - PolicyName: 's3-policy'
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action: 's3:PutObject'
+            Resource: !Sub 'arn:aws:s3:::${bucketName}/*'
+            Condition:
+              StringLike:
+                's3:x-amz-acl': 'bucket-owner-full-control'
+          - Effect: Allow
+            Action: 's3:GetBucketAcl'
+            Resource: !Sub 'arn:aws:s3:::${bucketName}'
+      - PolicyName: 'sns-policy'
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action: 'sns:Publish'
+            Resource: !Ref ConfigTopic
