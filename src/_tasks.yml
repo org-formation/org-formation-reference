@@ -50,10 +50,10 @@ GuardDuty:
   DependsOn: [ OrganizationBuild, Types ]
   Path: ./templates/070-guard-duty/_tasks.yml
 
-AwsConfigInventory:
+AwsConfig:
   Type: include
   DependsOn: [ OrganizationBuild, Types ]
-  Path: ./templates/080-aws-config-inventory/_tasks.yml
+  Path: ./templates/080-aws-config/_tasks.yml
 
 AwsSso:
   Type: include
