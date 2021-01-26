@@ -26,7 +26,7 @@ Resources:
     Type: Community::Organizations::Policy
     OrganizationBinding: !Ref OrganizationsPolicyBinding
     Properties:
-      Content: !ReadFile ./resources/global-ai-optout-policy.json
+      Content: !ReadFile ./resources/ai-trainig-optout-policy.json
       Description: Opts out of sharing data for AI training purposes
       Name: GlobalAiOptOut
       PolicyType: AISERVICES_OPT_OUT_POLICY
