@@ -11,8 +11,8 @@ CloudTrail:
     Account: '*'
     IncludeMasterAccount: true
   OrganizationBindings:
-    ManagementBinding: # Binding pointing to the account used to manage CloudTrail
+    StorageBinding: # Binding pointing to the account used to store CloudTrail
       Account: !Ref LogArchiveAccount
   TerminationProtection: true
   Parameters:
-    resourcePrefix: !Ref resourcePrefix
+    bucketName: !Sub '${resourcePrefix}-cloudtrail-${CurrentAccount.AccountId}'

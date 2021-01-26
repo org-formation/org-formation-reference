@@ -1,17 +1,17 @@
 AWSTemplateFormatVersion: '2010-09-09-OC'
 
 Parameters:
-  resourcePrefix:
+  bucketName:
     Type: String
 
 Resources:
   CloudTrailBucket:
-    OrganizationBinding: !Ref ManagementBinding
+    OrganizationBinding: !Ref StorageBinding
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
-      BucketName: !Sub '${resourcePrefix}-cloudtrail-${AWS::AccountId}'
+      BucketName: !Ref bucketName
       AccessControl: Private
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
@@ -22,18 +22,11 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
-      LifecycleConfiguration:
-        Rules:
-          - Id: ArchiveToGlacier
-            Status: Enabled
-            Transitions:
-              - StorageClass: GLACIER
-                TransitionInDays: 30
       VersioningConfiguration:
         Status: Enabled
 
   CloudTrailBucketPolicy:
-    OrganizationBinding: !Ref ManagementBinding
+    OrganizationBinding: !Ref StorageBinding
     Type: AWS::S3::BucketPolicy
     Properties:
       Bucket: !Ref CloudTrailBucket
@@ -56,70 +49,14 @@ Resources:
               StringEquals:
                 s3:x-amz-acl: bucket-owner-full-control
 
-  CloudTrailLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      RetentionInDays: 14
-      LogGroupName: !Sub '${resourcePrefix}-cloudtrail-log'
-
-  CloudTrailLogGroupRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub '${resourcePrefix}-cloudtrail-log-role'
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Sid: AssumeRole1
-            Effect: Allow
-            Principal:
-              Service: cloudtrail.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: root
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Sid: AWSCloudTrailCreateLogStream
-                Effect: Allow
-                Action:
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: !GetAtt CloudTrailLogGroup.Arn
-
-  CloudTrailTopic:
-    OrganizationBinding: !Ref ManagementBinding
-    Type: AWS::SNS::Topic
-    Properties:
-      DisplayName: Centralized cloud trail logs aggregation topic
-      FifoTopic: false
-      TopicName: !Sub '${resourcePrefix}-cloudtrail'
-
-  CloudTrailTopicPolicy:
-    OrganizationBinding: !Ref ManagementBinding
-    Type: AWS::SNS::TopicPolicy
-    Properties:
-      Topics:
-        - !Ref CloudTrailTopic
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Sid: AWSCloudTrailSNSPolicy
-            Effect: Allow
-            Principal:
-              Service: cloudtrail.amazonaws.com
-            Resource: '*'
-            Action: sns:publish
-
   CloudTrail:
     Type: AWS::CloudTrail::Trail
-    DependsOn:
-      - CloudTrailBucketPolicy
-      - CloudTrailTopicPolicy
+    DependsOn: CloudTrailBucketPolicy
     Properties:
       S3BucketName: !Ref CloudTrailBucket
       IsLogging: true
       IncludeGlobalServiceEvents: true
       IsMultiRegionTrail: true
-      CloudWatchLogsLogGroupArn: !GetAtt CloudTrailLogGroup.Arn
-      CloudWatchLogsRoleArn: !GetAtt CloudTrailLogGroupRole.Arn
-      SnsTopicName: !Ref CloudTrailTopic # we must reference the ARN here for cross-account access
+      EnableLogFileValidation: true
+      CloudWatchLogsLogGroupArn: ''
+      CloudWatchLogsRoleArn: ''
