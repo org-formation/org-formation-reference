@@ -9,6 +9,5 @@ DenyRootAccess:
   DefaultOrganizationBindingRegion: us-east-1
   DefaultOrganizationBinding:
     IncludeMasterAccount: true
-  OrganizationBindings:
-    ScpTargetAccountBinding:
-      Account: '*'
+  Parameters:
+    targetIds: [ !Ref OrganizationRoot ]
