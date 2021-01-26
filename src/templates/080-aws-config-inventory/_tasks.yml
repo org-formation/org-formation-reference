@@ -11,7 +11,7 @@ ConfigAuditBucket:
   Template: ./audit-bucket.yml
   StackName: !Sub '${resourcePrefix}-${appName}-audit-bucket'
   StackDescription: AWS Config - Central Bucket for Findings and Resource history
-  TerminationProtection: false
+  TerminationProtection: true
   DefaultOrganizationBindingRegion: !Ref primaryRegion
   DefaultOrganizationBinding:
     Account: !Ref LogArchiveAccount
