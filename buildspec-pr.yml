@@ -5,9 +5,9 @@ phases:
       - npm ci
       - echo installed dependencies
       - npx org-formation -v
+      - pip install cfn-lint
   build:
     commands:
-      - npm run perform-tasks --  --no-color
-  post_build:
-    commands:
-      - echo Build completed
+      - npm run print-tasks -- --no-color
+      - npm run validate-tasks -- --no-color
+      - npm run cfn-lint

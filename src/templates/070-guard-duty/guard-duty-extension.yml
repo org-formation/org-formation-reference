@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  resourcePrefix:
+    Type: String
+
+  detectorId:
+    Type: String
+
+  bucketName:
+    Type: String
+
+Resources:
+
+  TrustedIpSet:
+    Type: AWS::GuardDuty::IPSet
+    Properties:
+      Name: !Sub '${resourcePrefix}-guardduty-trusted-ips'
+      Activate: true
+      DetectorId: !Ref detectorId
+      Format: TXT
+      Location: !Sub 's3://${bucketName}/trusted_ips.txt'
+
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: AWS Org GuardDuty Notification
+      TopicName: !Sub '${resourcePrefix}-guardduty-notification'
+
+  NotificationTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref NotificationTopic
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowEventsPublish
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref NotificationTopic
+
+  FindingRule:
+    Type: AWS::Events::Rule
+    DependsOn: NotificationTopicPolicy
+    Properties:
+      Name: !Sub '${resourcePrefix}-guardduty-finding-rule'
+      EventPattern:
+        source:
+          - aws.guardduty
+        detail-type:
+          - GuardDuty Finding
+      Targets:
+        - Id: NotificationTopic
+          Arn: !Ref NotificationTopic
+      State: ENABLED
+
+Outputs:
+  NotificationTopic:
+    Value: !Ref NotificationTopic
+    Export:
+      Name: !Sub '${AWS::StackName}-notification-topic'

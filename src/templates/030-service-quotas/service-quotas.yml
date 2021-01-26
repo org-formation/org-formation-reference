@@ -1,11 +1,10 @@
-AWSTemplateFormatVersion: "2010-09-09-OC"
+AWSTemplateFormatVersion: '2010-09-09-OC'
 
 Resources:
 
   S3BucketsQuota:
     OrganizationBinding:
       AccountsWithTag: service-quotas-s3-buckets
-      Region: us-east-1
     Type: Community::ServiceQuotas::S3
     Properties:
       Buckets: !GetAtt AWSAccount.Tags.service-quotas-s3-buckets
@@ -13,7 +12,6 @@ Resources:
   CfnStacksQuota:
     OrganizationBinding:
       AccountsWithTag: service-quotas-cfn-stacks
-      Region: us-east-1
     Type: Community::ServiceQuotas::CloudFormation
     Properties:
       Stacks: !GetAtt AWSAccount.Tags.service-quotas-cfn-stacks
@@ -21,7 +19,6 @@ Resources:
   DdbTablesQuota:
     OrganizationBinding:
       AccountsWithTag: service-quotas-ddb-tables
-      Region: us-east-1
     Type: Community::ServiceQuotas::DynamoDB
     Properties:
       Tables: !GetAtt AWSAccount.Tags.service-quotas-ddb-tables

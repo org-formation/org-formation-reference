@@ -1,7 +1,8 @@
 Parameters:
-  <<: !Include "../../_parameters.yml"
+  <<: !Include '../../_parameters.yml'
 
 ServiceQuotas:
   Type: update-stacks
   Template: ./service-quotas.yml
-  StackName: !Sub "${resourcePrefix}-service-quotas"
+  StackName: !Sub '${resourcePrefix}-service-quotas'
+  DefaultOrganizationBindingRegion: !Ref primaryRegion

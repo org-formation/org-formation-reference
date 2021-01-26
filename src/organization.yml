@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09-OC'
 Description: Default organization blueprint
 
+# https://aws.amazon.com/blogs/mt/best-practices-for-organizational-units-with-aws-organizations/
 Organization:
 
   ManagementAccount:
@@ -17,28 +18,39 @@ Organization:
   OrganizationRoot:
     Type: OC::ORG::OrganizationRoot
     Properties:
+      DefaultOrganizationAccessRoleName: OrganizationAccountAccessRole
+      DefaultBuildAccessRoleName: OrganizationFormationBuildAccessRole
 
-  ProductionOU:
+  # Organizational Unit used for Production workloads
+  ProdOu:
     Type: OC::ORG::OrganizationalUnit
     Properties:
-      OrganizationalUnitName: production
-      Accounts:
+      OrganizationalUnitName: prod
+      Accounts: []
 
-  DevelopmentOU:
+  # Organizational Unit used for the Software Development Life Cycle of each team
+  SdlcOu:
     Type: OC::ORG::OrganizationalUnit
     Properties:
-      OrganizationalUnitName: development
-      Accounts:
+      OrganizationalUnitName: sdlc
+      Accounts: []
 
-  SharedOU:
+  # Organizational Unit used for shared infrastructure services
+  SharedOu:
     Type: OC::ORG::OrganizationalUnit
     Properties:
       OrganizationalUnitName: shared
       Accounts:
+        - !Ref OrgBuildAccount
         - !Ref SecurityAccount
         - !Ref LogArchiveAccount
-        - !Ref OrgBuildAccount
 
+  # Organizational Unit that contains accounts to be deleted from organization
+  SuspendedOu:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: suspended
+      Accounts: []
   SecurityAccount:
     Type: OC::ORG::Account
     Properties:
