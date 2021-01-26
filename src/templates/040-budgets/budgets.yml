@@ -2,11 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 
 Parameters:
 
-  resourcePrefix:
-    Type: String
-    Default: orgformation
-
-  accountAlias:
+  budgetName:
     Type: String
 
   emailAddress:
@@ -25,7 +21,7 @@ Resources:
     Type: AWS::Budgets::Budget
     Properties:
       Budget:
-        BudgetName: !Sub '${resourcePrefix}-budget-${accountAlias}'
+        BudgetName: !Ref budgetName
         BudgetLimit:
           Amount: !Ref budgetAmount
           Unit: USD
