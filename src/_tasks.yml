@@ -57,5 +57,5 @@ AwsConfigInventory:
 
 AwsSso:
   Type: include
-  DependsOn: [ OrganizationBuild, Types ]
+  DependsOn: [ OrganizationBuild, Types, SeviceControlPolicies ]
   Path: ./templates/100-aws-sso/_tasks.yml
