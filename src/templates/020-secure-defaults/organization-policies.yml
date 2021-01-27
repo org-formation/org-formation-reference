@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+
+Parameters:
+
+  targetIds:
+    Type: CommaDelimitedList
+
+Resources:
+
+  AiOptOutPolicy:
+    Type: Community::Organizations::Policy
+    Properties:
+      Content: !ReadFile ./resources/ai-trainig-optout-policy.json
+      Description: Opts out of sharing data for AI training purposes
+      Name: GlobalAiOptOut
+      PolicyType: AISERVICES_OPT_OUT_POLICY
+      TargetIds: !Ref targetIds
