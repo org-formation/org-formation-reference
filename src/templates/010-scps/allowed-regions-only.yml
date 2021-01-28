@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  allowedRegions:
+    Type: List<String>
+
+Resources:
+
+  Scp:
+    Type: Community::Organizations::Policy
+    Properties:
+
+    

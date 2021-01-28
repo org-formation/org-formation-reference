@@ -1,0 +1,13 @@
+Parameters:
+  <<: !Include '../../_parameters.yml'
+
+AccountCreationEvent:
+  Type: update-stacks
+  Template: ./event.yml
+  StackName: !Sub '${resourcePrefix}-account-creation-event'
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+    Region: us-east-1
+  Parameters: 
+    organizationPrincipalId: !Ref organizationPrincipalId
+    resourcePrefix: !Ref resourcePrefix

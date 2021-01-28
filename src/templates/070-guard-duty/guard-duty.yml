@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+
+Parameters:
+  resourcePrefix:
+    Type: String
+
+  accountId:
+    Type: String
+    Description: The identifier from the account used to manage GuardDuty
+
+Resources:
+
+  GuardDutyBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub '${resourcePrefix}-guardduty-finding'
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  GuardDutyBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref GuardDutyBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: GuardDutyWrite
+            Effect: Allow
+            Principal:
+              Service: guardduty.amazonaws.com
+            Action:
+              - s3:PutObject
+              - s3:GetBucketLocation
+            Resource:
+              - !Sub 'arn:aws:s3:::${GuardDutyBucket}/*'
+              - !GetAtt GuardDutyBucket.Arn
+
+  Detector:
+    OrganizationBinding: !Ref AllBinding
+    Type: AWS::GuardDuty::Detector
+    Properties:
+      Enable: true
+      FindingPublishingFrequency: FIFTEEN_MINUTES
+
+  Master:
+    OrganizationBinding: !Ref MemberBinding
+    Type: AWS::GuardDuty::Master
+    Properties:
+      DetectorId: !Ref Detector
+      MasterId: !Ref accountId
+
+  Member:
+    Type: AWS::GuardDuty::Member
+    ForeachAccount:
+      !Ref MemberBinding
+    Properties:
+      DetectorId: !Ref Detector
+      Email: !GetAtt CurrentAccount.RootEmail
+      MemberId: !Ref CurrentAccount
+      Status: Invited
+      DisableEmailNotification: true
+
+Outputs:
+  DetectorId:
+    Value: !Ref Detector
+    Export:
+      Name: !Sub '${AWS::StackName}-detector-id'

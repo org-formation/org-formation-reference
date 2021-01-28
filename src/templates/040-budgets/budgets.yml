@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  budgetName:
+    Type: String
+
+  emailAddress:
+    Type: String
+
+  budgetAmount:
+    Type: Number
+    Default: 50
+
+Resources:
+
+  # note that changing some attributes on Budget resources will result in an error.
+  # this unfortunately is a cloudformation error described here: https://github.com/aws-cloudformation/aws-cloudformation-coverage-roadmap/issues/365
+  # workaround is to delete the budget resource and then re-add it.
+  Budget:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetName: !Ref budgetName
+        BudgetLimit:
+          Amount: !Ref budgetAmount
+          Unit: USD
+        TimeUnit: MONTHLY
+        BudgetType: COST
+        CostTypes:
+          IncludeSupport: false
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref emailAddress
+        - Notification:
+            NotificationType: FORECASTED
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref emailAddress
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref emailAddress

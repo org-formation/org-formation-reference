@@ -1,0 +1,15 @@
+Parameters:
+  <<: !Include '../../_parameters.yml'
+
+BudgetAlarms:
+  Type: update-stacks
+  Template: ./budgets.yml
+  StackName: !Sub '${resourcePrefix}-billing-alarm'
+  TerminationProtection: false
+  DefaultOrganizationBinding:
+    Region: !Ref primaryRegion
+    AccountsWithTag: budget-alarm-threshold
+  Parameters:
+    budgetName: !Sub '${resourcePrefix}-budget-${CurrentAccount.AccountId}'
+    budgetAmount: !GetAtt CurrentAccount.Tags.budget-alarm-threshold
+    emailAddress: !GetAtt CurrentAccount.Tags.budget-alarm-threshold-email-recipient

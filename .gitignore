@@ -1,0 +1,6 @@
+node_modules/
+.serverless/
+.DS_Store
+.printed-stacks/
+.vscode/launch.json
+initial-commit.zip

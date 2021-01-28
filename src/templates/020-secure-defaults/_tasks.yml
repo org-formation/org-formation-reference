@@ -1,0 +1,55 @@
+Parameters:
+  <<: !Include '../../_parameters.yml'
+
+PasswordPolicy:
+  Type: update-stacks
+  Template: ./password-policy.yml
+  StackName: !Sub '${resourcePrefix}-password-policy'
+  MaxConcurrentStacks: 10
+  Parameters:
+    minimumPasswordLength: 24
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+    Account: '*'
+    Region: !Ref primaryRegion
+
+SecureDefaults:
+  Type: update-stacks
+  Template: ./secure-defaults.yml
+  StackName: !Sub '${resourcePrefix}-secure-defaults'
+  StackDescription: Ensures AWS services are configured to be secure by default
+  MaxConcurrentStacks: 10
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+    Account: '*'
+    Region: !Ref primaryRegion
+  OrganizationBindings:
+    AllRegionsBinding:
+      IncludeMasterAccount: true
+      Account: '*'
+      Region: !Ref allRegions
+
+OrganizationPolicies:
+  Type: update-stacks
+  Template: ./organization-policies.yml
+  StackName: !Sub '${resourcePrefix}-organization-policies'
+  StackDescription: Ensures AWS Organizations is configured with secure policies by default
+  MaxConcurrentStacks: 10
+  Parameters:
+    targetIds: [ !Ref OrganizationRoot ]
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+    Region: us-east-1
+
+# TODO: should work after this issue is fixed:
+# https://github.com/org-formation/aws-resource-providers/issues/74
+# AccessAnalyzer:
+#   Type: update-stacks
+#   Template: ./access-analyzer.yml
+#   StackName: !Sub '${resourcePrefix}-access-analyzer'
+#   MaxConcurrentStacks: 10
+#   Parameters:
+#     targetId: !Ref SecurityAccount
+#   DefaultOrganizationBinding:
+#     IncludeMasterAccount: true
+#     Region: us-east-1

@@ -1,0 +1,121 @@
+Parameters:
+  <<: !Include '../../_parameters.yml'
+
+  appName:
+    Type: String
+    Default: 'org-formation'
+
+  accountId:
+    Type: String
+    Description: ID of the account used by OrgFormation build process
+    Default: !Ref OrgBuildAccount
+
+# Before starting to deploy using OrgFormation, we need the default build access role in the organization management account
+OrganizationFormationRoleMaster:
+  Type: update-stacks
+  Template: ./role.yml
+  StackName: !Sub '${appName}-role'
+  StackDescription: Organization Formation Build Infrastructure (IAM Role used for cross account access by build process)
+  TerminationProtection: true
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+  Parameters:
+    roleName: !GetAtt CurrentAccount.BuildAccessRoleName
+    assumeRolePrincipals: [ !Ref ManagementAccount, !Ref accountId ]
+
+# Have the default access role as a fallback mechanism
+OrganizationFormationRoleAccessMaster:
+  Type: update-stacks
+  Template: ./role.yml
+  StackName: !Sub '${appName}-role-access'
+  StackDescription: Organization Formation Build Infrastructure (IAM Role used for cross account access)
+  TerminationProtection: true
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+  Parameters:
+    roleName: !GetAtt CurrentAccount.OrganizationAccessRoleName
+    assumeRolePrincipals: [ !Ref ManagementAccount, !Ref accountId ]
+
+# Create the default build access role in every member account
+OrganizationFormationRoleMembers:
+  Type: update-stacks
+  DependsOn: OrganizationFormationRoleMaster
+  Template: ./role.yml
+  StackName: !Sub '${resourcePrefix}-${appName}-role'
+  StackDescription: Organization Formation Build Infrastructure (IAM Role used for cross account access by build process)
+  TerminationProtection: true
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: false
+    Account: '*'
+  MaxConcurrentStacks: 10
+  Parameters:
+    roleName: !GetAtt CurrentAccount.BuildAccessRoleName
+    assumeRolePrincipals: [ !Ref ManagementAccount, !Ref accountId ]
+  TaskRoleName: !GetAtt CurrentAccount.OrganizationAccessRoleName
+  TaskViaRoleArn: !Sub 'arn:aws:iam::${ManagementAccount}:role/${ManagementAccount.BuildAccessRoleName}'
+
+OrganizationFormationEventBus:
+  Type: update-stacks
+  Template: ./eventbus.yml
+  StackName: !Sub '${resourcePrefix}-${appName}-eventbus'
+  StackDescription: Organization Formation Build Infrastructure (EventBridge policy used in the default event bus)
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+  Parameters:
+    organizationPrincipalId: !Ref organizationPrincipalId
+
+OrganizationFormationBuckets:
+  Type: update-stacks
+  DependsOn: OrganizationFormationRoleMembers
+  Template: ./buckets.yml
+  StackName: !Sub '${resourcePrefix}-${appName}-buckets'
+  StackDescription: Organization Formation Build Infrastructure (S3 buckets used for states and deployments)
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    Account: !Ref accountId
+  Parameters:
+    stateBucketName: !Sub 'organization-formation-state-${accountId}-prd'
+    deploymentsBucketName: !Sub 'organization-formation-deployments-${accountId}-prd'
+    organizationPrincipalId: !Ref organizationPrincipalId
+    allowedAccountId: !Ref ManagementAccount
+
+OrganizationFormationInitialCommit:
+  Type: copy-to-s3
+  DependsOn: OrganizationFormationBuckets
+  LocalPath: 'initial-commit.zip'
+  RemotePath: !Sub 's3://organization-formation-deployments-${accountId}-prd/initial-commit.zip'
+  OrganizationBinding:
+    Account: !Ref accountId
+    Region: !Ref primaryRegion
+
+OrganizationFormationBuildPipeline:
+  Type: update-stacks
+  DependsOn: OrganizationFormationInitialCommit
+  Template: ./build.yml
+  StackName: !Sub '${resourcePrefix}-${appName}-build'
+  StackDescription: Organization Formation Build Infrastructure (CodeCommit, CodeBuild and CodePipeline for continuous deployment)
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    Account: !Ref accountId
+  Parameters:
+    resourcePrefix: !Ref resourcePrefix
+    repositoryName: 'organization-formation'
+    bucketName: !Sub 'organization-formation-deployments-${accountId}-prd'
+
+OrganizationFormationPrBuild:
+  Type: update-stacks
+  DependsOn: OrganizationFormationBuildPipeline
+  Template: ./pr-build.yml
+  StackName: !Sub '${resourcePrefix}-${appName}-pr-build'
+  StackDescription: Organization Formation Build Infrastructure (CodeBuild project used for Pull Requests)
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    Account: !Ref accountId
+  Parameters:
+    resourcePrefix: !Ref resourcePrefix
+    repositoryName: 'organization-formation'
+    sourceLocation: !CopyValue [ !Sub '${resourcePrefix}-${appName}-build-git-location' ]

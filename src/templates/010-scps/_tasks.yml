@@ -1,0 +1,13 @@
+Parameters:
+  <<: !Include '../../_parameters.yml'
+
+DenyRootAccess:
+  Type: update-stacks
+  Template: ./deny-root-access.yml
+  StackName: !Sub '${resourcePrefix}-deny-root-access'
+  MaxConcurrentStacks: 10
+  DefaultOrganizationBindingRegion: us-east-1
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+  Parameters:
+    targetIds: [ !Ref OrganizationRoot ]

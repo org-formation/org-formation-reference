@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+
+Resources:
+
+  S3AccountPublicAccessBlock:
+    Type: Community::S3::PublicAccessBlock
+    Properties:
+      BlockPublicAcls: true
+      BlockPublicPolicy: true
+      IgnorePublicAcls: true
+      RestrictPublicBuckets: true
+
+  EbsEncryptionDefaults:
+    Type: Community::Organizations::EbsEncryptionDefaults
+    OrganizationBinding: !Ref AllRegionsBinding
+    Properties:
+      EnableEbsEncryptionByDefault: true

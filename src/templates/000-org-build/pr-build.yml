@@ -1,0 +1,139 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Organization Formation setup for CodeCommit, CodeBuild and CodePipeline'
+
+Parameters:
+
+  resourcePrefix:
+    Type: String
+    Default: orgformation
+
+  repositoryName:
+    Type: String
+    Default: organization-formation
+
+  sourceLocation:
+    Type: String
+
+Resources:
+  OrgBuildLogGroup:
+    Type: 'AWS::Logs::LogGroup'
+    Properties:
+      RetentionInDays: 7
+      LogGroupName: !Sub '/codebuild/${resourcePrefix}-pr-build'
+
+  OrgBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AdministratorAccess' # see: https://github.com/org-formation/org-formation-cli/blob/master/docs/least-priviledge.md
+
+  OrgBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub '${resourcePrefix}-pr-build'
+      Description: AWS Organization Formation PR Build Project
+      Artifacts: { Type: NO_ARTIFACTS }
+      Environment:
+        Type: LINUX_CONTAINER
+        Image: aws/codebuild/standard:4.0
+        ComputeType: BUILD_GENERAL1_SMALL
+        ImagePullCredentialsType: CODEBUILD
+      QueuedTimeoutInMinutes: 480
+      ServiceRole: !Ref OrgBuildRole
+      Source:
+        GitCloneDepth: 1
+        Location: !Ref sourceLocation
+        Type: CODECOMMIT
+        BuildSpec: buildspec-pr.yml
+      LogsConfig:
+        CloudWatchLogs:
+          GroupName: !Ref OrgBuildLogGroup
+          Status: ENABLED
+      SourceVersion: refs/heads/master
+      TimeoutInMinutes: 180
+
+  StartBuildEventsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${resourcePrefix}-build-events-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+      Path: /
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - codebuild:StartBuild
+                Resource: '*'
+
+  BuildPullRequestRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: This rule ensures that a pull request will trigger the build
+      Name: !Sub '${resourcePrefix}-build-pull-request-rule'
+      EventPattern:
+        source: 
+          - 'aws.codecommit'
+        detail-type: 
+          - 'CodeCommit Pull Request State Change'
+        detail: 
+          event: 
+            - 'pullRequestCreated'
+            - 'pullRequestSourceBranchUpdated'
+        resources:
+          - !Sub 'arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:${repositoryName}'
+      State: 'ENABLED'
+      Targets:
+        - Arn: !GetAtt OrgBuildProject.Arn
+          Id: 'PullRequestBuildProject'
+          RoleArn: !GetAtt StartBuildEventsRole.Arn
+          InputTransformer:
+            InputPathsMap:
+              sourceCommit: $.detail.sourceCommit
+              pullRequestId: $.detail.pullRequestId
+              repositoryName: $.detail.repositoryNames[0]
+              destinationCommit: $.detail.destinationCommit
+            InputTemplate: >-
+                {
+                  "sourceVersion": <sourceCommit>,
+                  "artifactsOverride": {"type": "NO_ARTIFACTS"},
+                  "environmentVariablesOverride": [
+                    {
+                      "name": "pullRequestId",
+                      "value": <pullRequestId>,
+                      "type": "PLAINTEXT"
+                    },
+                    {
+                      "name": "repositoryName",
+                      "value": <repositoryName>,
+                      "type": "PLAINTEXT"
+                    },
+                    {
+                      "name": "sourceCommit",
+                      "value": <sourceCommit>,
+                      "type": "PLAINTEXT"
+                    },
+                    {
+                      "name": "destinationCommit",
+                      "value": <destinationCommit>,
+                      "type": "PLAINTEXT"
+                    }
+                  ]
+                }

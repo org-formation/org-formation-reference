@@ -1,0 +1,36 @@
+Parameters:
+  <<: !Include '../../_parameters.yml'
+
+  appName:
+    Type: String
+    Default: 'config'
+
+# Deploy a bucket in the archive account where all members of the Organization will place their AWS Config Findings
+ConfigAuditBucket:
+  Type: update-stacks
+  Template: ./audit-bucket.yml
+  StackName: !Sub '${resourcePrefix}-${appName}-audit-bucket'
+  StackDescription: AWS Config - Central Bucket for Findings and Resource history
+  TerminationProtection: true
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    Account: !Ref LogArchiveAccount
+  Parameters:
+    resourcePrefix: !Ref resourcePrefix
+    bucketName: !Sub '${resourcePrefix}-${appName}-audit'
+
+# Enable AWS Config in all member accounts and send Findings and Config history to the centralized s3 bucket in the archive account
+ConfigBase:
+  Type: update-stacks
+  DependsOn: ConfigAuditBucket
+  Template: ./config.yml
+  StackName: !Sub '${resourcePrefix}-${appName}-base'
+  StackDescription: AWS Config - Base
+  TerminationProtection: false
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+    Account: '*'
+  Parameters:
+    resourcePrefix: !Ref resourcePrefix
+    bucketName: !Sub '${resourcePrefix}-${appName}-audit'

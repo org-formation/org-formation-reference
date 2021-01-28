@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+
+Resources:
+
+  S3BucketsQuota:
+    OrganizationBinding:
+      AccountsWithTag: service-quotas-s3-buckets
+    Type: Community::ServiceQuotas::S3
+    Properties:
+      Buckets: !GetAtt AWSAccount.Tags.service-quotas-s3-buckets
+
+  CfnStacksQuota:
+    OrganizationBinding:
+      AccountsWithTag: service-quotas-cfn-stacks
+    Type: Community::ServiceQuotas::CloudFormation
+    Properties:
+      Stacks: !GetAtt AWSAccount.Tags.service-quotas-cfn-stacks
+
+  DdbTablesQuota:
+    OrganizationBinding:
+      AccountsWithTag: service-quotas-ddb-tables
+    Type: Community::ServiceQuotas::DynamoDB
+    Properties:
+      Tables: !GetAtt AWSAccount.Tags.service-quotas-ddb-tables

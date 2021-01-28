@@ -1,0 +1,13 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - npm ci
+      - echo installed dependencies
+      - npx org-formation -v
+  build:
+    commands:
+      - npm run perform-tasks -- --no-color
+  post_build:
+    commands:
+      - echo Build completed

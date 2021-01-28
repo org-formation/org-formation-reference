@@ -1,0 +1,120 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  stateBucketName:
+    Type: String
+
+  deploymentsBucketName:
+    Type: String
+
+  organizationPrincipalId:
+    Type: String
+
+  allowedAccountId:
+    Type: String
+
+Resources:
+  StateBucket:
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref stateBucketName
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+
+  BuildArtifactsBucket:
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref deploymentsBucketName
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+
+  StateBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StateBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AccessFromOwnerAccount
+            Principal:
+              AWS: !Ref 'AWS::AccountId'
+            Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - !Sub '${StateBucket.Arn}'
+              - !Sub '${StateBucket.Arn}/*'
+          - Sid: AccessFromAnotherAccount
+            Principal:
+              AWS: !Ref allowedAccountId
+            Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - !Sub '${StateBucket.Arn}'
+              - !Sub '${StateBucket.Arn}/*'
+          - Sid: AccessFromOrg
+            Principal:
+              AWS: '*'
+            Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource:
+              - !Sub '${StateBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                'aws:PrincipalOrgID':
+                  - !Ref organizationPrincipalId
+
+  BuildArtifactsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref BuildArtifactsBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: 'AccessFromOwnerAccount'
+            Effect: 'Allow'
+            Principal:
+              AWS: !Ref AWS::AccountId
+            Action: 's3:*'
+            Resource:
+              - !Sub '${BuildArtifactsBucket.Arn}'
+              - !Sub '${BuildArtifactsBucket.Arn}/*'
+          - Sid: AccessFromAnotherAccount
+            Principal:
+              AWS: !Ref allowedAccountId
+            Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - !Sub '${BuildArtifactsBucket.Arn}'
+              - !Sub '${BuildArtifactsBucket.Arn}/*'
+          - Sid: 'OrgAllowGetObject'
+            Effect: 'Allow'
+            Principal: '*'
+            Action:
+              - 's3:GetObject'
+              - 's3:GetObjectVersion'
+            Resource:
+              - !Sub '${BuildArtifactsBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                'aws:PrincipalOrgID':
+                  - !Ref organizationPrincipalId

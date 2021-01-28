@@ -1,0 +1,75 @@
+Parameters:
+  <<: !Include '../../_parameters.yml'
+
+  appName:
+    Type: String
+    Default: 'guardduty'
+
+  accountId:
+    Type: String
+    Description: The identifier from the account used to manage GuardDuty
+    Default: !Ref SecurityAccount
+
+GuardDuty:
+  Type: update-stacks
+  Template: ./guard-duty.yml
+  StackName: !Sub '${resourcePrefix}-${appName}'
+  StackDescription: GuardDuty - Base
+  TerminationProtection: true
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    Account: !Ref accountId
+  OrganizationBindings:
+    ArchiveBinding:
+      Account: !Ref LogArchiveAccount
+    MemberBinding:
+      Account: '*'
+      IncludeMasterAccount: true
+      ExcludeAccount:
+        - !Ref accountId
+    AllBinding:
+      Account: '*'
+      IncludeMasterAccount: true
+  Parameters:
+    resourcePrefix: !Ref resourcePrefix
+    accountId: !Ref accountId
+
+# bucket that contains the trusted IP addresses that are excluded from GuardDuty findings
+GuardDutyTrustedIpsBucket:
+  Type: update-stacks
+  Template: ./trusted-ips-bucket.yml
+  StackName: !Sub '${resourcePrefix}-${appName}-trusted-ips-bucket'
+  StackDescription: GuardDuty - Trusted IPs bucket
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    Account: !Ref accountId
+  TerminationProtection: true
+  Parameters:
+    resourcePrefix: !Ref resourcePrefix
+    bucketName: !Sub '${resourcePrefix}-${appName}-trusted-ips'
+
+GuardDutyTrustedIps:
+  Type: copy-to-s3
+  DependsOn: GuardDutyTrustedIpsBucket
+  LocalPath: ./trusted-ips.txt
+  RemotePath: !Sub 's3://${resourcePrefix}-${appName}-trusted-ips/trusted_ips.txt'
+  OrganizationBinding:
+    Account: !Ref accountId
+    Region: !Ref primaryRegion
+
+GuardDutyExtension:
+  Type: update-stacks
+  DependsOn:
+    - GuardDuty
+    - GuardDutyTrustedIps
+  Template: ./guard-duty-extension.yml
+  StackName: !Sub '${resourcePrefix}-${appName}-extension'
+  StackDescription: GuardDuty - Extension (including IP Set)
+  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBinding:
+    Account: !Ref accountId
+  TerminationProtection: true
+  Parameters:
+    resourcePrefix: !Ref resourcePrefix
+    detectorId: !CopyValue [ !Sub '${resourcePrefix}-${appName}-detector-id' ]
+    bucketName: !CopyValue [ !Sub '${resourcePrefix}-${appName}-trusted-ips-bucket-name' ]

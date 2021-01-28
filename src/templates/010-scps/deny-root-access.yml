@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+
+Parameters:
+
+  targetIds:
+    Type: CommaDelimitedList
+
+Resources:
+
+  Scp:
+    Type: Community::Organizations::Policy
+    Properties:
+      Content: !ReadFile ./resources/deny-root-access-policy.json
+      Description: Restricts the use of the Root account
+      Name: DenyRootAll
+      PolicyType: SERVICE_CONTROL_POLICY
+      TargetIds: !Ref targetIds

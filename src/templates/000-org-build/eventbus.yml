@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  organizationPrincipalId:
+    Type: String
+
+Resources:
+  DefaultBusPolicy:
+    Type: AWS::Events::EventBusPolicy
+    Properties:
+      StatementId: share-orgformation-across-aws-org
+      Statement:
+        Effect: Allow
+        Principal:
+            AWS: '*'
+        Action:
+            - 'events:PutRule'
+            - 'events:DeleteRule'
+            - 'events:DescribeRule'
+            - 'events:DisableRule'
+            - 'events:EnableRule'
+            - 'events:PutTargets'
+            - 'events:RemoveTargets'
+        Resource:
+            - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/default
+        Condition:
+            StringEqualsIfExists:
+                'events:creatorAccount' : '${aws:PrincipalAccount}'
+            StringEquals:
+                'aws:PrincipalOrgID': !Ref organizationPrincipalId
+                'events:source': 'oc.org-formation'

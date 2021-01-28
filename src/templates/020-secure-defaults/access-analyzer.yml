@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  targetId:
+    Type: String
+
+Resources:
+
+  AccessAnalyzerServiceAccess:
+    Type: Community::Organizations::EnableAWSServiceAccess
+    Properties:
+      ServicePrincipal: access-analyzer.amazonaws.com
+
+  AccessAnalyzerDelegatedAdmin:
+    Type: Community::Organizations::DelegatedAdmin
+    DependsOn: AccessAnalyzerServiceAccess
+    Properties:
+      ServicePrincipal: access-analyzer.amazonaws.com
+      AccountId: !Ref targetId

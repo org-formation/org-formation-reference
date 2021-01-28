@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  organizationPrincipalId:
+    Type: String
+
+  resourcePrefix:
+    Type: String
+    Default: orgformation
+
+  emailAddress:
+    Type: String
+    Default: ''
+
+Conditions:
+
+  hasSubscription: !Not [ !Equals [ '', !Ref emailAddress ] ]
+
+Resources:
+
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: Account Creation Notification
+      TopicName: !Sub '${resourcePrefix}-account-creation-notification'
+
+  EmailSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: hasSubscription
+    Properties:
+      Endpoint: !Ref emailAddress
+      Protocol: email
+      TopicArn: !Ref NotificationTopic
+
+  NotificationTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref NotificationTopic
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowEventsPublish
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref NotificationTopic
+          - Sid: AllowOrganizationSubscribe
+            Effect: Allow
+            Action: sns:Subscribe
+            Resource: !Ref NotificationTopic
+            Principal: '*'
+            Condition:
+              StringEquals:
+                aws:PrincipalOrgID: !Ref organizationPrincipalId
+
+  OrganizationEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub '${resourcePrefix}-account-creation-rule'
+      Description: Rule used to forward events from OrgFormation
+      State: ENABLED
+      EventPattern:
+        source:
+          - oc.org-formation
+        detail:
+          eventName:
+            - AccountCreated
+      Targets:
+        - Id: NotificationTopic
+          Arn: !Ref NotificationTopic
+          InputPath: $.detail
+
+Outputs:
+  NotificationTopic:
+    Value: !Ref NotificationTopic
+    Export:
+      Name: !Sub '${AWS::StackName}-notification-topic'
