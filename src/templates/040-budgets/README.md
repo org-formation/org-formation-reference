@@ -1,0 +1,18 @@
+### Purpose of these templates
+The single template in this folder deployes a budget and a budget alarm to each account based on tags in the account specification. The alert when the threshold is met will be sent to the e-mail address specified on the account.
+
+As an example, consider the following account:
+
+```  TempDevAccount:
+    Type: OC::ORG::Account
+    Properties:
+      Alias: ba-temp-dev 
+      AccountName: Temporary Development Account
+      AccountId: '215869187117'
+      RootEmail: aws-temp-dev@bee.awesome 
+      Tags:
+        budget-alarm-threshold: 200
+        budget-alarm-threshold-email-recipient: aws-budget-owner@bee.awesome 
+```
+
+This account will get a budget alarm for $200 monthly. Once that amount is reached, an alert will be sent to `aws-budget-owner@bee.awesome`
