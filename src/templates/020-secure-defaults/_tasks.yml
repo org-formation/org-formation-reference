@@ -29,6 +29,17 @@ SecureDefaults:
       Account: '*'
       Region: !Ref allRegions
 
+NoDefaultVpc:
+  Type: update-stacks
+  Template: ./no-default-vpc.yml
+  StackName: !Sub '${resourcePrefix}-no-default-vpc'
+  MaxConcurrentStacks: 10
+  FailedStackTolerance: 100
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+    Account: '*'
+    Region: !Ref allRegions
+
 OrganizationPolicies:
   Type: update-stacks
   Template: ./organization-policies.yml
