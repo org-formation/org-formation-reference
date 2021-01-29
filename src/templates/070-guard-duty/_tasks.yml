@@ -20,7 +20,7 @@ GuardDuty:
   DefaultOrganizationBinding:
     Account: !Ref accountId
   OrganizationBindings:
-    ArchiveBinding:
+    LogArchiveBinding:
       Account: !Ref LogArchiveAccount
     MemberBinding:
       Account: '*'
