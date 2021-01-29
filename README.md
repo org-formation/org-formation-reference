@@ -1,3 +1,13 @@
+# IMPORTANT NOTE
+
+This reference architecture and also the steps outlined in this review are still under development and wont work as-is. 
+
+Please do 
+ - watch this project if you would like to get updates on the process.
+ - contribute best practices / ideas / documentation / code through issues or PRs <3
+
+thanks!
+
 # Introduction
 This is a reference architecture to get started quickly with using `org-formation` as well as provide examples of best practices and demonstrates the capabilities. The reference architecture is built with the following core principles:
 * _Batteries included_: it should deploy with as little dependencies as possible
