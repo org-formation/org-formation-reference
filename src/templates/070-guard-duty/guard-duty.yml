@@ -12,6 +12,7 @@ Resources:
 
   GuardDutyBucket:
     Type: AWS::S3::Bucket
+    OrganizationBinding: !Ref LogArchiveBinding
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
@@ -29,6 +30,7 @@ Resources:
 
   GuardDutyBucketPolicy:
     Type: AWS::S3::BucketPolicy
+    OrganizationBinding: !Ref LogArchiveBinding
     Properties:
       Bucket: !Ref GuardDutyBucket
       PolicyDocument:
