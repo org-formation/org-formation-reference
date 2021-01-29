@@ -20,6 +20,7 @@ Resources:
 
   NotificationTopic:
     Type: AWS::SNS::Topic
+    Condition: hasSubscription
     Properties:
       DisplayName: Account Creation Notification
       TopicName: !Sub '${resourcePrefix}-account-creation-notification'
@@ -34,6 +35,7 @@ Resources:
 
   NotificationTopicPolicy:
     Type: AWS::SNS::TopicPolicy
+    Condition: hasSubscription
     Properties:
       Topics:
         - !Ref NotificationTopic
@@ -57,6 +59,7 @@ Resources:
 
   OrganizationEventRule:
     Type: AWS::Events::Rule
+    Condition: hasSubscription
     Properties:
       Name: !Sub '${resourcePrefix}-account-creation-rule'
       Description: Rule used to forward events from OrgFormation

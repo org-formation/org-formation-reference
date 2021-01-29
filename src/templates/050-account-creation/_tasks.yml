@@ -4,10 +4,15 @@ Parameters:
 AccountCreationEvent:
   Type: update-stacks
   Template: ./event.yml
-  StackName: !Sub '${resourcePrefix}-account-creation-event'
+  StackName: !Sub '${resourcePrefix}-account-creation'
   DefaultOrganizationBinding:
     IncludeMasterAccount: true
     Region: us-east-1
-  Parameters: 
+  Parameters:
     organizationPrincipalId: !Ref organizationPrincipalId
     resourcePrefix: !Ref resourcePrefix
+    emailAddress: ''
+
+    # if you put an email address in here, you will receive an email for every newly created account.
+    # this is just an example to get you started with further automating the account creation process.
+
