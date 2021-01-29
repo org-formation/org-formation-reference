@@ -23,14 +23,6 @@ Resources:
       ConfigSnapshotDeliveryProperties:
         DeliveryFrequency: One_Hour
       S3BucketName: !Ref bucketName
-      SnsTopicARN: !Ref ConfigTopic
-
-  ConfigTopic:
-    Type: 'AWS::SNS::Topic'
-    Properties: 
-      DisplayName: !Sub 'AWS Config Findings for account ${AWS::AccountId}'
-      FifoTopic: false
-      TopicName: !Sub '${resourcePrefix}-config-finding-${AWS::AccountId}'
 
   ConfigurationRecorderRole:
     Type: 'AWS::IAM::Role'
@@ -59,10 +51,3 @@ Resources:
           - Effect: Allow
             Action: 's3:GetBucketAcl'
             Resource: !Sub 'arn:aws:s3:::${bucketName}'
-      - PolicyName: 'sns-policy'
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action: 'sns:Publish'
-            Resource: !Ref ConfigTopic
