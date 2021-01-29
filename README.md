@@ -10,8 +10,8 @@ thanks!
 
 # Introduction
 This is a reference architecture to get started quickly with using `org-formation` as well as provide examples of best practices and demonstrates the capabilities. The reference architecture is built with the following core principles:
-* _Batteries included_: it should deploy with as little dependencies as possible
-* _Always relevant_: every organization will get value out of every part of the reference architecture. This means two things
+* _Batteries included:_ it should deploy with as little dependencies as possible
+* _Always relevant:_ every organization will get value out of every part of the reference architecture. This means two things
   * it should not contain services that might not be used. Examples: **AWS ECS**, **AWS Step Functions**
   * it should not be too opinionated about choosing an AWS service as the implementation for a function that can also be sourced externally. Examples: **AWS SecurityHub**, **AWS CloudWatch** logs and metrics
 
@@ -44,9 +44,9 @@ Create an AWS Account. This will be the management account of your AWS Organizat
 1. Navigate [here](https://portal.aws.amazon.com/billing/signup?nc2=h_ct&src=default&redirect_url=https%3A%2F%2Faws.amazon.com%2Fregistration-confirmation#/start) to sign up to an AWS account. Or sign-up on the page [here](https://aws.amazon.com/) 
 2. Gather the following data that you will need in step [Clone and modify this repository](#4.-clone-and-modify-this-repository)
 
-| Parameter | Where to find it | Example |
-| ----- | ----------- | --- |
-| {{management-account-id}} | Top right -> your account -> My Account | 341696816352 |
+| Parameter | Where to find it | Example
+| ----- | ----------- | ---
+| {{management-account-id}} | Top right -> your account -> My Account | 341696816352
 
 ## 2. Create the AWS Organization
 
@@ -59,45 +59,45 @@ You will use AWS SSO to obtain access to the AWS Accounts after we are done with
 
 1. [Enable AWS SSO](https://docs.aws.amazon.com/singlesignon/latest/userguide/step1.html)
 2. [Create 4 groups](https://docs.aws.amazon.com/singlesignon/latest/userguide/addgroups.html)
-  a. Administrator
-  b. Developer
-  c. Auditor
-  d. Supporter
+   - Administrator
+   - Developer
+   - Auditor
+   - Supporter
 3. [Create 1 user](https://docs.aws.amazon.com/singlesignon/latest/userguide/addusers.html)
-  a. Set a password
-  b. Enroll 2FA 
-  c. Add user to the Administrator group
+   - Set a password
+   - Enroll 2FA 
+   - Add user to the Administrator group
 4. Gather the following data you will need in steps [Clone and modify this repository](#4.-clone-and-modify-this-repository) and [Clone your new `org-formation` repository](#6.-clone-your-new-org-formation-repository)
 
-| Parameter | Description | Example |
-| ----- | ----------- | --- |
-| SSO start URL | Go to AWS SSO -> Settings -> User Portal -> User Portal URL | https://dgega332fa.awsapps.com/start  |
-| {{sso-instance-arn}} | Go to AWS SSO -> Settings -> ARN | arn:aws:sso:::instance/ssoins-6987b39db64e1ecd  |
-| {{sso-admin-group-id}} | Go to AWS SSO -> Groups -> Administrator -> Details -> Group ID | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32 |
-| {{sso-auditor-group-id}} | Go to AWS SSO -> Groups -> Auditor -> Details -> Group ID | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32 |
-| {{sso-developer-group-id}} | Go to AWS SSO -> Groups -> Developer -> Details -> Group ID | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32 |
-| {{sso-supporter-group-id}} | Go to AWS SSO -> Groups -> Supporter -> Details -> Group ID | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32 |
+| Parameter | Description | Example
+| ----- | ----------- | ---
+| SSO start URL | Go to AWS SSO -> Settings -> User Portal -> User Portal URL | https://dgega332fa.awsapps.com/start
+| {{sso-instance-arn}} | Go to AWS SSO -> Settings -> ARN | arn:aws:sso:::instance/ssoins-6987b39db64e1ecd
+| {{sso-admin-group-id}} | Go to AWS SSO -> Groups -> Administrator -> Details -> Group ID | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32
+| {{sso-auditor-group-id}} | Go to AWS SSO -> Groups -> Auditor -> Details -> Group ID | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32
+| {{sso-developer-group-id}} | Go to AWS SSO -> Groups -> Developer -> Details -> Group ID | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32
+| {{sso-supporter-group-id}} | Go to AWS SSO -> Groups -> Supporter -> Details -> Group ID | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32
 
 Configuring AWS SSO manually using AWS SSO itself as an identity provider is the quickest and easiest way to get started (and is batteries included). At the time of writing AWS SSO does not support automating this via an API, as soon as it does, this guide will be updated accordingly. If you want to configure an external Identity Provider, then start [here](https://docs.aws.amazon.com/singlesignon/latest/userguide/supported-idps.html).
 ## 4. Clone and modify this repository
 1. Clone this repository locally
 2. Search and replace the following values globally in all files
 
-| Parameter | Description | Source | Example |
-| --- | --- | --- | --- |
-| {{management-account-id}} | 12 digit identifier of the management account | [Create the AWS Management Account](#1-create-the-aws-management-account) | 341696816352 |
-| {{state-bucket-name}} | S3 bucket where the IaC state will be stored | choose | organization-formation-state-341696816352-prd |
-| {{organization-name}} | Alias of the management account | choose | bee-awesome |
-| {{primary-aws-region}} | The primary AWS region to deploy to | choose | us-east-1 |
-| {{management-root-email-address}} | Email address used to register the management account | [Create the AWS Management Account](#1-create-the-aws-management-account) | platform.team@bee.awesome |
-| {{compliance-root-email-address}} | Email address for the compliance account | [Prerequisites](#prerequisites) | platform.team+compliance@bee.awesome |
-| {{orgbuild-root-email-address}} | Email address for the org build account | [Prerequisites](#prerequisites) | platform.team+org-build@bee.awesome |
-| {{org-owner-email-address}} | Email address for the organization owner account | [Prerequisites](#prerequisites) | platform.team+management@bee.awesome |
-| {{sso-instance-arn}} | AWS SSO instance ARN | [Configure AWS SSO](#3-configure-aws-sso) | arn:aws:sso:::instance/ssoins-6987b39db64e1ecd |
-| {{sso-admin-group-id}} | Principal ID from Identity Provider's group used by administrators | [Configure AWS SSO](#3-configure-aws-sso) |99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32 |
-| {{sso-auditor-group-id}} | Principal ID from Identity Provider's group used by auditors | [Configure AWS SSO](#3-configure-aws-sso) | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32 |
-| {{sso-developer-group-id}} | Principal ID from Identity Provider's group used by auditors | [Configure AWS SSO](#3-configure-aws-sso) | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32 |
-| {{sso-supporter-group-id}} | Principal ID from Identity Provider's group used by supporters | [Configure AWS SSO](#3-configure-aws-sso) | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32 |
+| Parameter | Description | Source | Example
+| --- | --- | --- | ---
+| {{management-account-id}} | 12 digit identifier of the management account | [Create the AWS Management Account](#1-create-the-aws-management-account) | 341696816352
+| {{state-bucket-name}} | S3 bucket where the IaC state will be stored | choose | organization-formation-state-341696816352-prd
+| {{organization-name}} | Alias of the management account | choose | bee-awesome
+| {{primary-aws-region}} | The primary AWS region to deploy to | choose | us-east-1
+| {{management-root-email-address}} | Email address used to register the management account | [Create the AWS Management Account](#1-create-the-aws-management-account) | platform.team@bee.awesome
+| {{compliance-root-email-address}} | Email address for the compliance account | [Prerequisites](#prerequisites) | platform.team+compliance@bee.awesome
+| {{orgbuild-root-email-address}} | Email address for the org build account | [Prerequisites](#prerequisites) | platform.team+org-build@bee.awesome
+| {{org-owner-email-address}} | Email address for the organization owner account | [Prerequisites](#prerequisites) | platform.team+management@bee.awesome
+| {{sso-instance-arn}} | AWS SSO instance ARN | [Configure AWS SSO](#3-configure-aws-sso) | arn:aws:sso:::instance/ssoins-6987b39db64e1ecd
+| {{sso-admin-group-id}} | Principal ID from Identity Provider's group used by administrators | [Configure AWS SSO](#3-configure-aws-sso) |99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32
+| {{sso-auditor-group-id}} | Principal ID from Identity Provider's group used by auditors | [Configure AWS SSO](#3-configure-aws-sso) | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32
+| {{sso-developer-group-id}} | Principal ID from Identity Provider's group used by auditors | [Configure AWS SSO](#3-configure-aws-sso) | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32
+| {{sso-supporter-group-id}} | Principal ID from Identity Provider's group used by supporters | [Configure AWS SSO](#3-configure-aws-sso) | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32
 
 ## 5. Initialize `org-formation`
 
@@ -125,7 +125,7 @@ You can then merge that with the ./src/organization.yml file in the way you like
 
 2. Apply the organization.yml file to AWS Organizations. This means creating accounts and OUs and ordering them. This will also create the OrgBuild account where the org-formation build pipeline will reside.
 ```
-npx org-formation update ./src/organization.yml --print-stack --verbose
+npx org-formation update ./src/organization.yml --verbose
 ```
 3. Create the role that the `org-formation` uses inside of the Management Account
 ```
@@ -149,15 +149,15 @@ Here you will configure command line access to the CodeCommit repository that wi
 
 You will need to provide the following details:
 
-| Parameter | Description | Example |
-| ----- | ----------- | --- |
-| SSO start URL | The landing page URL to be found in the AWS SSO of the management account | https://dgega332fa.awsapps.com/start  |
-| SSO region | The default region | us-east-1 |
-| SSO account id | Select the OrgBuild account from the drop-down | 222140350420 |
-| SSO role name | Select a role with write permission the drop-down | Administrator |
-| CLI default client Region | The default region | us-east-1 |
-| CLI default output format | Whatever format you prefer | yaml |
-| CLI profile name | Name of the profile, choose wisely | ba-orgbuild-admin |
+| Parameter | Description | Example
+| ----- | ----------- | ---
+| SSO start URL | The landing page URL to be found in the AWS SSO of the management account | https://dgega332fa.awsapps.com/start 
+| SSO region | The default region | us-east-1
+| SSO account id | Select the OrgBuild account from the drop-down | 222140350420
+| SSO role name | Select a role with write permission the drop-down | Administrator
+| CLI default client Region | The default region | us-east-1
+| CLI default output format | Whatever format you prefer | yaml
+| CLI profile name | Name of the profile, choose wisely | ba-orgbuild-admin
 
 2. Configure support for CodeCommit [git-remote-codecommit](https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-git-remote-codecommit.html?icmpid=docs_acc_console_connect#setting-up-git-remote-codecommit-install)
 
