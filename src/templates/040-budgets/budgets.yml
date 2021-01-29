@@ -7,12 +7,46 @@ Parameters:
 
   emailAddress:
     Type: String
+    Default: ''
 
   budgetAmount:
     Type: Number
     Default: 50
 
+Conditions:
+
+  hasSubscription: !Not [ !Equals [ '', !Ref emailAddress ] ]
+
 Resources:
+
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: Budgets Notification
+      TopicName: !Sub '${budgetName}-topic'
+
+  EmailSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: hasSubscription
+    Properties:
+      Endpoint: !Ref emailAddress
+      Protocol: email
+      TopicArn: !Ref NotificationTopic
+
+  NotificationTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref NotificationTopic
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowBudgetsPublish
+            Effect: Allow
+            Principal:
+              Service: budgets.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref NotificationTopic
 
   # note that changing some attributes on Budget resources will result in an error.
   # this unfortunately is a cloudformation error described here: https://github.com/aws-cloudformation/aws-cloudformation-coverage-roadmap/issues/365
@@ -36,21 +70,21 @@ Resources:
             Threshold: 80
             ThresholdType: PERCENTAGE
           Subscribers:
-            - SubscriptionType: EMAIL
-              Address: !Ref emailAddress
+            - SubscriptionType: SNS
+              Address: !Ref NotificationTopic
         - Notification:
             NotificationType: FORECASTED
             ComparisonOperator: GREATER_THAN
             Threshold: 100
             ThresholdType: PERCENTAGE
           Subscribers:
-            - SubscriptionType: EMAIL
-              Address: !Ref emailAddress
+            - SubscriptionType: SNS
+              Address: !Ref NotificationTopic
         - Notification:
             NotificationType: ACTUAL
             ComparisonOperator: GREATER_THAN
             Threshold: 100
             ThresholdType: PERCENTAGE
           Subscribers:
-            - SubscriptionType: EMAIL
-              Address: !Ref emailAddress
+            - SubscriptionType: SNS
+              Address: !Ref NotificationTopic
