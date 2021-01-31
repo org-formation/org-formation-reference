@@ -16,4 +16,9 @@ As an example, consider the following account:
         budget-alarm-threshold-email-recipient: aws-budget-owner@bee.awesome
 ```
 
-This account will get a budget alarm for $200 monthly. Once that amount is reached, an alert will be sent to `aws-budget-owner@bee.awesome`
+This account has a budget threshold set for $200 monthly. An email with a budget alarm will be sent when:
+- forecasted spent (end of month) exceeds 200 usd (100% of threshold)
+- actual spent (month to date) exceeds 160 usd (80% of threshold)
+- actual spent (month to date) exceeds 200 usd (100% of threshold)
+
+The alerts will be sent to `aws-budget-owner@bee.awesome`.
