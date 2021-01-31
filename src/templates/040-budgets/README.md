@@ -3,7 +3,8 @@ The single template in this folder deploys a budget and a budget alarm to each a
 
 As an example, consider the following account:
 
-```  TempDevAccount:
+``` yaml
+  TempDevAccount:
     Type: OC::ORG::Account
     Properties:
       Alias: ba-temp-dev
