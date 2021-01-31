@@ -1,8 +1,8 @@
 # IMPORTANT NOTE
 
-This reference architecture and also the steps outlined in this review are still under development and wont work as-is. 
+This reference architecture and also the steps outlined in this review are still under development and wont work as-is.
 
-Please do 
+Please do
  - watch this project if you would like to get updates on the process.
  - contribute best practices / ideas / documentation / code through issues or PRs <3
 
@@ -29,19 +29,18 @@ To create an AWS Organization based on this reference architecture, managed by o
 4. [Clone and modify this repository](#4-clone-and-modify-this-repository)
 5. [Initialize `org-formation`](#5-initialize-org-formation)
 6. [Clone your new `org-formation` repository](#6-clone-your-new-org-formation-repository)
-7. [Lock down the root user](#7-lock-down-the-root-user)
 
 ## Prerequisites
 1. A valid credit card
 2. A working phone number
-3. Four unique email addresses within your domain (org-owner, management-root, compliance-root and orgbuild-root)
+3. Four unique email addresses within your domain (management-root, compliance-root and orgbuild-root)
 
 > _Hint: if you are using Google as an email provider, you can use team+something@domain.com to create unique addresses that all arrive in the same email box_
 
 ## 1. Create the AWS Management Account
 Create an AWS Account. This will be the management account of your AWS Organization
 
-1. Navigate [here](https://portal.aws.amazon.com/billing/signup?nc2=h_ct&src=default&redirect_url=https%3A%2F%2Faws.amazon.com%2Fregistration-confirmation#/start) to sign up to an AWS account. Or sign-up on the page [here](https://aws.amazon.com/) 
+1. Navigate [here](https://portal.aws.amazon.com/billing/signup?nc2=h_ct&src=default&redirect_url=https%3A%2F%2Faws.amazon.com%2Fregistration-confirmation#/start) to sign up to an AWS account. Or sign-up on the page [here](https://aws.amazon.com/)
 2. Gather the following data that you will need in step [Clone and modify this repository](#4.-clone-and-modify-this-repository)
 
 | Parameter | Where to find it | Example
@@ -65,7 +64,7 @@ You will use AWS SSO to obtain access to the AWS Accounts after we are done with
    - Supporter
 3. [Create 1 user](https://docs.aws.amazon.com/singlesignon/latest/userguide/addusers.html)
    - Set a password
-   - Enroll 2FA 
+   - Enroll 2FA
    - Add user to the Administrator group
 4. Gather the following data you will need in steps [Clone and modify this repository](#4.-clone-and-modify-this-repository) and [Clone your new `org-formation` repository](#6.-clone-your-new-org-formation-repository)
 
@@ -92,7 +91,6 @@ Configuring AWS SSO manually using AWS SSO itself as an identity provider is the
 | {{management-root-email-address}} | Email address used to register the management account | [Create the AWS Management Account](#1-create-the-aws-management-account) | platform.team@bee.awesome
 | {{compliance-root-email-address}} | Email address for the compliance account | [Prerequisites](#prerequisites) | platform.team+compliance@bee.awesome
 | {{orgbuild-root-email-address}} | Email address for the org build account | [Prerequisites](#prerequisites) | platform.team+org-build@bee.awesome
-| {{org-owner-email-address}} | Email address for the organization owner account | [Prerequisites](#prerequisites) | platform.team+management@bee.awesome
 | {{sso-instance-arn}} | AWS SSO instance ARN | [Configure AWS SSO](#3-configure-aws-sso) | arn:aws:sso:::instance/ssoins-6987b39db64e1ecd
 | {{sso-admin-group-id}} | Principal ID from Identity Provider's group used by administrators | [Configure AWS SSO](#3-configure-aws-sso) |99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32
 | {{sso-auditor-group-id}} | Principal ID from Identity Provider's group used by auditors | [Configure AWS SSO](#3-configure-aws-sso) | 99672ac0cf-8495fd69-c57e-4214-88a4-b9f41eed0d32
@@ -101,7 +99,7 @@ Configuring AWS SSO manually using AWS SSO itself as an identity provider is the
 
 ## 5. Initialize `org-formation`
 
-In this step, you run OrgFormation locally using the credentials of the root user of the management account. This is the only time you will use the root user of any account for any purpose and the root user will be closed off as the last step in this guide. 
+In this step, you run OrgFormation locally using the credentials of the root user of the management account. This is the only time you will use the root user of any account for any purpose and the root user will be closed off as the last step in this guide.
 
 > _Note: you might need to run the OrgFormation commands more than once._
 
@@ -151,7 +149,7 @@ You will need to provide the following details:
 
 | Parameter | Description | Example
 | ----- | ----------- | ---
-| SSO start URL | The landing page URL to be found in the AWS SSO of the management account | https://dgega332fa.awsapps.com/start 
+| SSO start URL | The landing page URL to be found in the AWS SSO of the management account | https://dgega332fa.awsapps.com/start
 | SSO region | The default region | us-east-1
 | SSO account id | Select the OrgBuild account from the drop-down | 222140350420
 | SSO role name | Select a role with write permission the drop-down | Administrator
@@ -163,15 +161,8 @@ You will need to provide the following details:
 
 3. Using your IDP (either AWS SSO itself or an external IDP), log into the OrgBuild account, navigate to AWS CodeCommit, find the repository URL and clone
 
-It looks something like this 
+It looks something like this
 ```
 git clone codecommit::eu-central-1://<AWS_CLI_PROFILE_NAME>@organization-formation
 ```
 4. You can now make changes, commit and push and that will be effectuated by the build pipeline in the OrgBuild Account
-
-## 7. Lock down the root user
-
-For all accounts in your organization do the following:
-1. Delete all [access keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user_manage_delete-key) (should only exist for the Management Root User)
-1. Set the [password](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_change-root.html) to something that you won't store
-2. Enable [MFA](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user_manage_mfa) and store the seed or hard token offline in a secure location
