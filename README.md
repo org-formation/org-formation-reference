@@ -58,7 +58,7 @@ You will use AWS SSO to obtain access to the AWS Accounts after we are done with
 
 1. [Enable AWS SSO](https://docs.aws.amazon.com/singlesignon/latest/userguide/step1.html)
 2. [Create 4 groups](https://docs.aws.amazon.com/singlesignon/latest/userguide/addgroups.html)
-   - Administrator
+   - Admin
    - Developer
    - Auditor
    - Supporter
