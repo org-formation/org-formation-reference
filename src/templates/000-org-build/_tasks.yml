@@ -62,7 +62,7 @@ OrganizationFormationEventBus:
   Template: ./eventbus.yml
   StackName: !Sub '${resourcePrefix}-${appName}-eventbus'
   StackDescription: Organization Formation Build Infrastructure (EventBridge policy used in the default event bus)
-  DefaultOrganizationBindingRegion: !Ref primaryRegion
+  DefaultOrganizationBindingRegion: 'us-east-1'
   DefaultOrganizationBinding:
     IncludeMasterAccount: true
   Parameters:
