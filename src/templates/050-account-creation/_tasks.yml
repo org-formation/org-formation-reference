@@ -6,7 +6,7 @@ AccountCreationEvent:
   Template: ./event.yml
   StackName: !Sub '${resourcePrefix}-account-creation'
   DefaultOrganizationBinding:
-    IncludeMasterAccount: true
+    Account: !Ref OrgBuildAccount
     Region: us-east-1
   Parameters:
     organizationPrincipalId: !Ref organizationPrincipalId
