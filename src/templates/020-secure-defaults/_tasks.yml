@@ -11,7 +11,7 @@ PasswordPolicy:
   DefaultOrganizationBinding:
     IncludeMasterAccount: true
     Account: '*'
-    Region: !Ref primaryRegion
+    Region: us-east-1 # Only compatible to us-east-1 region
 
 SecureDefaults:
   Type: update-stacks
