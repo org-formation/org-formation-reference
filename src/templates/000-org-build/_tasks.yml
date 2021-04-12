@@ -64,7 +64,7 @@ OrganizationFormationEventBus:
   StackDescription: Organization Formation Build Infrastructure (EventBridge policy used in the default event bus)
   DefaultOrganizationBindingRegion: 'us-east-1'
   DefaultOrganizationBinding:
-    IncludeMasterAccount: true
+    Account: !Ref OrgBuildAccount
   Parameters:
     organizationPrincipalId: !Ref organizationPrincipalId
 
