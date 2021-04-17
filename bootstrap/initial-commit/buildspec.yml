@@ -1,0 +1,11 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - npm ci
+  build:
+    commands:
+      - node bootstrap.js $BUILDACC_ROOTEMAIL | { read accountId; npx ofn init-pipeline --build-account-id  $accountId }
+  post_build:
+    commands:
+      - echo Build completed

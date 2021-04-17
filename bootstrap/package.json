@@ -1,0 +1,14 @@
+{
+  "name": "bootstrap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "reference:zip": "cd ../ && zip -vr reference.zip buildspec* package* README.md .gitignore .org-formationrc src/*",
+    "reference:upload": "cd ../ && aws s3 cp reference.zip s3://org-formation-reference/reference.zip",
+    "bootstrap:zip": "cd initial-commit && zip -vr initial-commit.zip . -x \"node_modules/*\"",
+    "bootstrap:upload": "cd initial-commit && aws s3 cp initial-commit.zip s3://org-formation-reference/initial-commit.zip"
+  },
+  "author": "",
+  "license": "ISC"
+}
