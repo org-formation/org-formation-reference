@@ -8,7 +8,7 @@
     "print-tasks": "npx org-formation print-tasks ./src/_tasks.yml --output yaml --max-concurrent-stacks 100 --max-concurrent-tasks 100",
     "perform-tasks": "npx org-formation perform-tasks ./src/_tasks.yml --max-concurrent-stacks 50 --max-concurrent-tasks 1",
     "validate-tasks": "npx org-formation validate-tasks ./src/_tasks.yml --failed-tasks-tolerance 0  --max-concurrent-stacks 100 --max-concurrent-tasks 100",
-    "cfn-lint": "if [ -d .printed-stacks ]\n then\n cfn-lint ./.printed-stacks/**/*.yaml -i W2001,E3001,E1019,W1020,W2509,E3021\n else\n echo skipping linting\n fi"
+    "cfn-lint": "if [ -d .printed-stacks ]; then cfn-lint ./.printed-stacks/**/*.yaml -i W2001,E3001,E1019,W1020,W2509,E3021; else echo skipping linting; fi"
   },
   "repository": {
     "type": "git",
