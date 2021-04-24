@@ -1,6 +1,18 @@
 Parameters:
   <<: !Include '../../_parameters.yml'
 
+AllowedRegionsOnly:
+  Type: update-stacks
+  Template: ./allowed-regions-only.yml
+  StackName: !Sub '${resourcePrefix}-allowed-regions-only'
+  MaxConcurrentStacks: 10
+  DefaultOrganizationBindingRegion: us-east-1
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+  Parameters:
+    supportedRegions: !Ref allRegions
+    targetIds: [ !Ref OrganizationRoot ]
+
 DenyRootAccess:
   Type: update-stacks
   Template: ./deny-root-access.yml
@@ -9,5 +21,33 @@ DenyRootAccess:
   DefaultOrganizationBindingRegion: us-east-1
   DefaultOrganizationBinding:
     IncludeMasterAccount: true
-  Parameters:
-    targetIds: [ !Ref OrganizationRoot ]
+  OrganizationBindings:
+    ScpTargetBinding:
+      Account: "*"
+      # ExcludeAccount: !Ref AccountName
+
+DenyLargeEC2Instances:
+  Type: update-stacks
+  Template: ./deny-large-ec2.yml
+  StackName: !Sub '${resourcePrefix}-deny-large-ec2'
+  MaxConcurrentStacks: 10
+  DefaultOrganizationBindingRegion: us-east-1
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+  OrganizationBindings:
+    ScpTargetBinding:
+      Account: "*"
+      # ExcludeAccount: !Ref AccountName
+
+DenyEverything:
+  Type: update-stacks
+  Template: ./deny-everything.yml
+  StackName: !Sub '${resourcePrefix}-deny-everything'
+  MaxConcurrentStacks: 10
+  DefaultOrganizationBindingRegion: us-east-1
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+  OrganizationBindings:
+    # ScpTargetBinding:
+    #   Account: !Ref AccountName
+

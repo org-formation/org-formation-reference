@@ -1,14 +1,41 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: '2010-09-09-OC'
 
 Parameters:
 
-  allowedRegions:
-    Type: List<String>
+  targetIds:
+    Type: CommaDelimitedList
+
+  supportedRegions:
+    Type: CommaDelimitedList
 
 Resources:
-
-  Scp:
+  OrganizationPolicy:
     Type: Community::Organizations::Policy
     Properties:
-
-    
+      Description: Deny unsupported region
+      Name: DenyUnsupportedRegions
+      PolicyType: SERVICE_CONTROL_POLICY
+      TargetIds: !Ref targetIds
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: DenyUnsupportedRegions
+            Effect: Deny
+            NotAction:
+              - "acm:*"
+              - "budgets:*"
+              - "chatbot:*"
+              - "cloudfront:*"
+              - "iam:*"
+              - "kms:*"
+              - "route53:*"
+              - "route53domains:*"
+              - "route53resolver:*"
+              - "organizations:*"
+              - "support:*"
+              - "waf:*"
+              - "wafv2:*"
+            Resource: "*"
+            Condition:
+              StringNotEquals:
+                "aws:RequestedRegion": !Ref supportedRegions
