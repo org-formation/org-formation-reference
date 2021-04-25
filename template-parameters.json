@@ -1,0 +1,34 @@
+[
+  {
+    "name": "management-acct-id",
+    "required": true
+  },
+  {
+    "name": "state-bucket-name",
+    "required": true
+  },
+  {
+    "name": "organization-name",
+    "required": true
+  },
+  {
+    "name": "primary-aws-region",
+    "required": true
+  },
+  {
+    "name": "management-acct-root-email",
+    "required": true
+  },
+  {
+    "name": "security-acct-root-email",
+    "required": true
+  },
+  {
+    "name": "logarchive-acct-root-email",
+    "required": true
+  },
+  {
+    "name": "orgbuild-acct-root-email",
+    "required": true
+  }
+]

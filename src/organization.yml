@@ -1,19 +1,18 @@
-AWSTemplateFormatVersion: '2010-09-09-OC'
+AWSTemplateFormatVersion: "2010-09-09-OC"
 Description: Default organization blueprint
 
 # https://aws.amazon.com/blogs/mt/best-practices-for-organizational-units-with-aws-organizations/
 Organization:
-
   ManagementAccount:
     Type: OC::ORG::MasterAccount
     Properties:
-      Alias: '{{organization-name}}-management'
-      RootEmail: aws+management@{{email-domain}}
+      Alias: "{{organization-name}}-management"
+      RootEmail: "{{management-acct-root-email}}"
       AccountName: Management Account
-      AccountId: '{{management-account-id}}'
+      AccountId: "{{management-account-id}}"
       Tags:
         budget-alarm-threshold: 200
-        budget-alarm-threshold-email-recipient: me@{{email-domain}}
+        budget-alarm-threshold-email-recipient: "{{management-acct-root-email}}"
 
   OrganizationRoot:
     Type: OC::ORG::OrganizationRoot
@@ -55,29 +54,29 @@ Organization:
   SecurityAccount:
     Type: OC::ORG::Account
     Properties:
-      Alias: '{{organization-name}}-security'
+      Alias: "{{organization-name}}-security"
       AccountName: Security Account
-      RootEmail: aws+security@{{email-domain}}
+      RootEmail: "{{security-acct-root-email}}"
       Tags:
         budget-alarm-threshold: 200
-        budget-alarm-threshold-email-recipient: security@{{email-domain}}
+        budget-alarm-threshold-email-recipient: "{{security-acct-root-email}}"
 
   LogArchiveAccount:
     Type: OC::ORG::Account
     Properties:
-      Alias: '{{organization-name}}-log-archive'
+      Alias: "{{organization-name}}-log-archive"
       AccountName: Log Archive Account
-      RootEmail: aws+log-archive@{{email-domain}}
+      RootEmail: "{{logarchive-acct-root-email}}"
       Tags:
         budget-alarm-threshold: 200
-        budget-alarm-threshold-email-recipient: log-archive@{{email-domain}}
+        budget-alarm-threshold-email-recipient: "{{logarchive-acct-root-email}}"
 
   OrgBuildAccount:
     Type: OC::ORG::Account
     Properties:
-      Alias: '{{organization-name}}-org-build'
+      Alias: "{{organization-name}}-org-build"
       AccountName: Organization Build Account
-      RootEmail: aws+org-build@{{email-domain}}
+      RootEmail: "{{orgbuild-acct-root-email}}"
       Tags:
         budget-alarm-threshold: 200
-        budget-alarm-threshold-email-recipient: me@{{email-domain}}
+        budget-alarm-threshold-email-recipient: "{{orgbuild-acct-root-email}}"
