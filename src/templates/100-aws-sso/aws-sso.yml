@@ -16,9 +16,17 @@ Parameters:
     Type: String
     Default: AdministratorAccess
 
+  # Must provide either a list of managedPolicies or an inlinePolicy.
+  # Can also provide both a list of managedPolicies and an inlinePolicy.
   managedPolicies:
     Type: CommaDelimitedList
-    Default: arn:aws:iam::aws:policy/AdministratorAccess
+    Default: ''
+    Description: 'A list of AWS managed policy ARNs for a SSO permission set'
+
+  inlinePolicy:
+    Type: String
+    Default: ''
+    Description: 'An AWS policy document for a SSO permission set'
 
   sessionDuration:
     Type: String
@@ -32,6 +40,10 @@ Conditions:
 
   includePermissionSet: !Equals [ '', !Ref permissionSetArn ]
   includeMaster: !Not [ !Equals [ '', !Ref masterAccountId ] ]
+  includeInlinePolicy: !Not [ !Equals [ '', !Ref inlinePolicy ] ]
+  includeManagedPolicies: !Not
+    - !Equals
+      - !Join ['', !Ref managedPolicies]
 
 Resources:
 
@@ -42,8 +54,9 @@ Resources:
       Name: !Ref permissionSetName
       Description: !Sub '${permissionSetName} access to AWS organization'
       InstanceArn: !Ref instanceArn
-      ManagedPolicies: !Ref managedPolicies
+      ManagedPolicies: !If [ includeManagedPolicies, !Ref managedPolicies, !Ref 'AWS::NoValue' ]
       SessionDuration: !Ref sessionDuration
+      InlinePolicy: !If [ includeInlinePolicy, !Ref inlinePolicy, !Ref 'AWS::NoValue' ]
 
   AssignmentMaster:
     Type: AWS::SSO::Assignment
