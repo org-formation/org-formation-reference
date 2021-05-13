@@ -171,4 +171,4 @@ SsoViewerSupporter:
     instanceArn: !Ref instanceArn
     principalId: !Ref supporterGroup
     permissionSetArn: !CopyValue [ !Sub '${resourcePrefix}-${appName}-viewer-permission-set-arn' ]
-    managedPolicies: [ 'arn:aws:iam::aws:policy/AdministratorAccess' ]
+    managedPolicies: [ 'arn:aws:iam::aws:policy/job-function/ViewOnlyAccess' ]
