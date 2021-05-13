@@ -16,8 +16,6 @@ Parameters:
     Type: String
     Default: AdministratorAccess
 
-  # Must provide either a list of managedPolicies or an inlinePolicy.
-  # Can also provide both a list of managedPolicies and an inlinePolicy.
   managedPolicies:
     Type: CommaDelimitedList
     Default: ''
