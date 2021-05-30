@@ -5,7 +5,7 @@ phases:
       - npm ci
   build:
     commands:
-      - node bootstrap.js $BUILDACC_ROOTEMAIL | { read accountId; npx ofn init-pipeline --build-account-id  $accountId }
+      - node bootstrap.js $BUILDACC_ROOTEMAIL | { read accountId; npx ofn init-pipeline --build-account-id  $accountId --template-url https://org-formation-reference.s3.amazonaws.com/reference.zip --template-parameters management-acct-id=$MANAGEMENTACCT_ID state-bucket-name=$STATE_BUCKET_NAME organization-name=$ORGANIZATION_NAME primary-aws-region=$PRIMARY_AWS_REGION management-acct-root-email=$MANAGEMENTACCT_ROOTEMAIL security-acct-root-email=$SECURITYACCT_ROOTEMAIL logarchive-acct-root-email=$LOGARCHIVEACCT_ROOTEMAIL orgbuild-acct-root-email=$BUILDACCT_ROOTEMAIL }
   post_build:
     commands:
       - echo Build completed
