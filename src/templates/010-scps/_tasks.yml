@@ -1,13 +1,54 @@
 Parameters:
-  <<: !Include '../../_parameters.yml'
+  <<: !Include "../../_parameters.yml"
 
-DenyRootAccess:
+# the SCPs DenyUnsupportedRegions and SelfProtect will be attached to the organization root using a parameter.
+# for a more fine grained way of applying SCPs you can look at DenyRootAccess and DenyLargeEc2Instances.
+# please note that you are only allowed to attach a maximum of 5 policies to a target (root, ou or account)
+# let me know if it would be interesting to have a mechanism to compile/compress policies into 1.
+
+DenyUnsupportedRegions:
   Type: update-stacks
-  Template: ./deny-root-access.yml
-  StackName: !Sub '${resourcePrefix}-deny-root-access'
-  MaxConcurrentStacks: 10
+  Template: ./deny-unsupported-regions.yml
+  StackName: !Sub "${resourcePrefix}-deny-unsupported-regions"
   DefaultOrganizationBindingRegion: us-east-1
   DefaultOrganizationBinding:
     IncludeMasterAccount: true
   Parameters:
-    targetIds: [ !Ref OrganizationRoot ]
+    targetIds: [!Ref OrganizationRoot]
+    supportedRegions: !Ref allRegions
+
+SelfProtect:
+  Type: update-stacks
+  Template: ./self-protect.yml
+  StackName: !Sub "${resourcePrefix}-self-protect"
+  DefaultOrganizationBindingRegion: us-east-1
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+  Parameters:
+    targetIds: [!Ref OrganizationRoot]
+
+DenyRootAccess:
+  Type: update-stacks
+  Template: ./deny-root-access.yml
+  StackName: !Sub "${resourcePrefix}-deny-root-access"
+  DefaultOrganizationBindingRegion: us-east-1
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+    # you can use the following to exclude accounts from this SCP, either temporarily or permanently
+    # ExcludeAccount: !Ref myAccount
+  OrganizationBindings:
+    TargetBinding:
+      Account: "*"
+
+DenyLargeEc2Instances:
+  Type: update-stacks
+  Template: ./deny-large-ec2.yml
+  StackName: !Sub "${resourcePrefix}-deny-large-ec2"
+  DefaultOrganizationBindingRegion: us-east-1
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+    # you can use the following to exclude accounts from this SCP, either temporarily or permanently
+    # ExcludeAccount: !Ref myAccount
+  OrganizationBindings:
+    TargetBinding:
+      Account: "*"
