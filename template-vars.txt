@@ -1,9 +1,0 @@
-the following template keys must be replaced
-
-* {{organization-name}}
-* {{email-domain}}
-* {{management-account-id}}
-* {{build-account-id}}
-* {{state-bucket-name}}
-* {{state-object}}
-* {{primary-aws-region}}

@@ -1,5 +1,5 @@
 Parameters:
-  <<: !Include './_parameters.yml'
+  <<: !Include "./_parameters.yml"
 
 OrganizationUpdate:
   Type: update-organization
@@ -17,45 +17,40 @@ Types:
 
 SeviceControlPolicies:
   Type: include
-  DependsOn: [ OrganizationBuild, Types ]
+  DependsOn: [OrganizationBuild, Types]
   Path: ./templates/010-scps/_tasks.yml
 
 SecureDefaults:
   Type: include
-  DependsOn: [ OrganizationBuild, Types ]
+  DependsOn: [OrganizationBuild, Types]
   Path: ./templates/020-secure-defaults/_tasks.yml
 
 ServiceQuotas:
   Type: include
-  DependsOn: [ OrganizationBuild, Types ]
+  DependsOn: [OrganizationBuild, Types]
   Path: ./templates/030-service-quotas/_tasks.yml
 
 Budgets:
   Type: include
-  DependsOn: [ OrganizationBuild ]
+  DependsOn: [OrganizationBuild]
   Path: ./templates/040-budgets/_tasks.yml
 
 AccountCreation:
   Type: include
-  DependsOn: [ OrganizationBuild ]
+  DependsOn: [OrganizationBuild]
   Path: ./templates/050-account-creation/_tasks.yml
 
 CloudTrail:
   Type: include
-  DependsOn: [ OrganizationBuild ]
+  DependsOn: [OrganizationBuild]
   Path: ./templates/060-cloud-trail/_tasks.yml
 
 GuardDuty:
   Type: include
-  DependsOn: [ OrganizationBuild, Types ]
+  DependsOn: [OrganizationBuild, Types]
   Path: ./templates/070-guard-duty/_tasks.yml
 
 AwsConfigInventory:
   Type: include
-  DependsOn: [ OrganizationBuild ]
+  DependsOn: [OrganizationBuild]
   Path: ./templates/080-aws-config-inventory/_tasks.yml
-
-AwsSso:
-  Type: include
-  DependsOn: [ OrganizationBuild, Types, SeviceControlPolicies ]
-  Path: ./templates/100-aws-sso/_tasks.yml

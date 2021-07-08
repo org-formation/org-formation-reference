@@ -1,0 +1,17 @@
+{
+  "name": "org-formation-bootstrap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bootstrap.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "refzip": "",
+    "ref:upload": "aws s3 cp initial-commit.zip s3://org-formation-reference/initial-commit.zip"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-organization-formation": "^0.9.15",
+    "nunjucks": "^3.2.3"
+  }
+}
