@@ -9,7 +9,7 @@ Resources:
     Type: Community::Organizations::Policy
     Properties:
       Description: prevent changes to org formation infrastructure
-      Name: DenyRootAll
+      Name: SelfProtect
       PolicyType: SERVICE_CONTROL_POLICY
       TargetIds: !Ref targetIds
       PolicyDocument:
