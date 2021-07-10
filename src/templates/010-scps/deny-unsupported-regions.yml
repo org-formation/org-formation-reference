@@ -26,6 +26,7 @@ Resources:
               - "chatbot:*"
               - "cloudfront:*"
               - "iam:*"
+              - "sts:*"
               - "kms:*"
               - "route53:*"
               - "route53domains:*"
