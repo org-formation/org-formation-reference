@@ -11,7 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-organization-formation": "^0.9.15",
-    "nunjucks": "^3.2.3"
+    "aws-organization-formation": "^0.9.16",
+    "nunjucks": "^3.2.3",
+    "ts-node": "^10.1.0"
   }
 }
