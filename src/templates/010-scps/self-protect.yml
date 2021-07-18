@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: "2010-09-09-OC"
+
+Parameters:
+  targetIds:
+    Type: CommaDelimitedList
+
+Resources:
+  Scp:
+    Type: Community::Organizations::Policy
+    Properties:
+      Description: prevent changes to org formation infrastructure
+      Name: SelfProtect
+      PolicyType: SERVICE_CONTROL_POLICY
+      TargetIds: !Ref targetIds
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: DenyChangeOfOrgRole
+            Effect: Deny
+            Action:
+              - "iam:Attach*"
+              - "iam:Create*"
+              - "iam:Delete*"
+              - "iam:Detach*"
+              - "iam:PutRole*"
+              - "iam:Update*"
+            Resource:
+              - "arn:aws:iam::*:role/OrganizationAccountAccessRole"
+              - "arn:aws:iam::*:role/OrganizationFormationBuildAccessRole"
+              - "arn:aws:iam::*:role/community-types/*"
+            Condition:
+              ArnNotLike:
+                "aws:PrincipalARN":
+                  - "arn:aws:iam::*:role/OrganizationFormationBuildAccessRole"
+                  - "arn:aws:iam::*:role/OrganizationAccountAccessRole"
+          - Sid: DenyChangingSecureDefaults
+            Effect: Deny
+            Action:
+              - "ec2:DisableEbsEncryptionByDefault"
+              - "s3:PutAccountPublicAccessBlock"
+            Resource:
+              - "*"
+            Condition:
+              ArnNotLike:
+                "aws:PrincipalARN":
+                  - "arn:aws:iam::*:role/community-types/*"
+          - Sid: DenyCreatingFakeExecutionRole
+            Effect: Deny
+            Action: "iam:CreateRole"
+            Resource:
+              - "arn:aws:iam::*:role/community-types/*"
+            Condition:
+              ArnNotLike:
+                "aws:PrincipalARN":
+                  - "arn:aws:iam::*:role/OrganizationFormationBuildAccessRole"
+          - Sid: DenyRegisterType
+            Effect: Deny
+            Action:
+              - "cloudformation:RegisterType"
+            Resource:
+              - "*"
+            Condition:
+              ArnNotLike:
+                "aws:PrincipalARN":
+                  - "arn:aws:iam::*:role/OrganizationFormationBuildAccessRole"
