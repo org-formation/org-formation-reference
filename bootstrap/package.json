@@ -6,9 +6,10 @@
   "scripts": {
     "reference:zip": "cd ../ && zip -vr reference.zip buildspec* package* README.md .gitignore .org-formationrc template-parameters.json src/*",
     "reference:upload": "cd ../ && aws s3 cp reference.zip s3://org-formation-reference/reference.zip && aws s3api put-object-acl --bucket org-formation-reference --key reference.zip --acl public-read",
-    "bootstrap:zip": "cd initial-commit && zip -vr initial-commit.zip . -x \"node_modules/*\"",
+    "bootstrap:zip": "cd initial-commit && tsc && zip -vr initial-commit.zip . -x \"node_modules/*\"",
     "bootstrap:upload": "cd initial-commit && aws s3 cp initial-commit.zip s3://org-formation-reference/initial-commit.zip && aws s3api put-object-acl --bucket org-formation-reference --key initial-commit.zip --acl public-read"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {}
 }

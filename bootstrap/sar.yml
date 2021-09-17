@@ -43,41 +43,47 @@ Parameters:
     AllowedValues: ["YES", "NO"]
     Description: Should the Bootstrapping process clean itself up?
 
-  BuildAccount:
-    Type: String
-    Default: "Use Management Account"
-    AllowedValues:
-      ["Use Management Account", "Use Existing Account", "Create New Account"]
-    Description: Should we use a dedicated build account for the eventual org-formation setup?
+  # BuildAccount:
+  #   Type: String
+  #   Default: "Create New Account"
+  #   AllowedValues:
+  #     ["Use Management Account", "Use Existing Account", "Create New Account"]
+  #   Description: Should we use a dedicated build account for the eventual org-formation setup?
 
   buildAccountRootEmail:
     Type: String
-    Default: "-"
-    Description: If creating a new account, what should be the root email?
+    Description: What is the root email of the account you would like to use as build account
 
   buildAccountName:
     Type: String
-    Default: "-"
-    Description: If creating a new account, what should be the account name?
+    Default: "Organization Build"
+    Description: What should be the name of the build account?
 
-  buildAccountId:
+  crossAccountRoleName:
     Type: String
-    Default: "-"
-    Description: If using existing account, what account id?
+    Default: "OrganizationAccountAccessRole"
+    Description: For new accounts that that will be created, what would be the cross account access role name?
 
-  formationResourcePrefix:
-    Type: String
-    Default: orgformation
-    Description: How should org-formation resources be prefixed?
 
-  formationRepositoryName:
-    Type: String
-    Default: organization-formation
-    Description: How should the org-formation repository be named?
+  # buildAccountId:
+  #   Type: String
+  #   Default: "-"
+  #   Description: If using existing account, what account id?
 
-  formationStateBucketName:
-    Type: String
-    Description: How should the org-formation state bucket be named?
+  # formationResourcePrefix:
+  #   Type: String
+  #   Default: orgformation
+  #   Description: How should org-formation resources be prefixed?
+
+  # formationRepositoryName:
+  #   Type: String
+  #   Default: organization-formation
+  #   Description: How should the org-formation repository be named?
+
+  # formationStateBucketName:
+  #   Type: String
+  #   Default: organization-formation-${AWS::AccountId}
+  #   Description: How should the org-formation state bucket be named?
 
 Resources:
   OrgBuildLogGroup:
@@ -261,12 +267,26 @@ Resources:
           Bucket: org-formation-reference
           Key: initial-commit.zip
 
+  OrgFormationInitPipeline:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+
   OrgPipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
       ArtifactStore:
         Type: S3
-        Location: !Sub "organization-formation-${AWS::AccountId}"
+        Location: !Ref OrgFormationInitPipeline
       Name: !Sub "${resourcePrefix}-pipeline"
       RoleArn: !GetAtt OrgPipelineRole.Arn
       Stages:
@@ -372,18 +392,22 @@ Resources:
             Value: !Ref buildAccountRootEmail
           - Name: BUILD_ACCT_NAME
             Value: !Ref buildAccountName
-          - Name: BUILD_ACCT_ID
-            Value: !Ref buildAccountId
-          - Name: USE_BUILD_ACCT
-            Value: !Ref BuildAccount
-          - Name: BOOTSTRAP_CLEANUP
-            Value: !Ref bootstrapCleanup
-          - Name: FORMATION_RES_PREFIX
-            Value: !Ref formationResourcePrefix
-          - Name: FORMATION_REPO_NAME
-            Value: !Ref formationRepositoryName
-          - Name: BOOTSTRAP_BUCKET_NAME
-            Value: !Ref formationStateBucketName
+          - Name: X_ACCT_ROLE_NAME
+            Value: !Ref crossAccountRoleName
+          # - Name: BUILD_ACCT_NAME
+          #   Value: !Ref buildAccountName
+          # - Name: BUILD_ACCT_ID
+          #   Value: !Ref buildAccountId
+          # - Name: USE_BUILD_ACCT
+          #   Value: !Ref BuildAccount
+          # - Name: BOOTSTRAP_CLEANUP
+          #   Value: !Ref bootstrapCleanup
+          # - Name: FORMATION_RES_PREFIX
+          #   Value: !Ref formationResourcePrefix
+          # - Name: FORMATION_REPO_NAME
+          #   Value: !Ref formationRepositoryName
+          # - Name: BOOTSTRAP_BUCKET_NAME
+          #   Value: !Ref formationStateBucketName
       QueuedTimeoutInMinutes: 480
       ServiceRole: !Ref OrgBuildRole
       Source:

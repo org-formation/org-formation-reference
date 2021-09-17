@@ -4,3 +4,5 @@ node_modules/
 .printed-stacks/
 .vscode/
 initial-commit.zip
+reference.zip
+bootstrap/initial-commit/bin/

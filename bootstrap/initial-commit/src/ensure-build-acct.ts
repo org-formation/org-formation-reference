@@ -6,7 +6,8 @@ import * as AWS from "aws-sdk";
 
 export const ensureBuildAccountExists = async (
   rootEmail: string,
-  accountName: string
+  accountName: string,
+  crossAccountRoleName: string
 ): Promise<string> => {
   const orgs = new AWS.Organizations({ region: "us-east-1" });
   const reader = new AwsOrganizationReader(orgs);
@@ -18,6 +19,7 @@ export const ensureBuildAccountExists = async (
   const accountId = await writer.createAccount({
     rootEmail,
     accountName,
+    organizationAccessRoleName: crossAccountRoleName,
     logicalId: "OrgFormatationBuildAccount",
   } as any);
 
