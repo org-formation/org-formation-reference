@@ -66,10 +66,10 @@ Create an AWS Account. This will be the management account of your AWS Organizat
 
 | Parameter                      | Description                                           | Source                                                                    | Example                                       |
 | ------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------- |
-| {{management-acct-id}}         | 12 digit identifier of the management account         | [Create the AWS Management Account](#1-create-the-aws-management-account) | 341696816352                                  |
-| {{state-bucket-name}}          | S3 bucket where the IaC state will be stored          | choose                                                                    | organization-formation-state-341696816352-prd |
-| {{organization-name}}          | Alias of the management account                       | choose                                                                    | bee-awesome                                   |
-| {{primary-aws-region}}         | The primary AWS region to deploy to                   | choose                                                                    | us-east-1                                     |
+| {{ManagementAcctId}}           | 12 digit identifier of the management account         | [Create the AWS Management Account](#1-create-the-aws-management-account) | 341696816352                                  |
+| {{StateBucketName}}            | S3 bucket where the IaC state will be stored          | choose                                                                    | organization-formation-state-341696816352-prd |
+| {{OrganizationName}}           | Alias of the management account                       | choose                                                                    | bee-awesome                                   |
+| {{PrimaryAwsRegion}}           | The primary AWS region to deploy to                   | choose                                                                    | us-east-1                                     |
 | {{management-acct-root-email}} | Email address used to register the management account | [Create the AWS Management Account](#1-create-the-aws-management-account) | platform.team@bee.awesome                     |
 | {{security-acct-root-email}}   | Email address for the compliance account              | [Prerequisites](#prerequisites)                                           | platform.team+compliance@bee.awesome          |
 | {{logarchive-acct-root-email}} | Email address for the compliance account              | [Prerequisites](#prerequisites)                                           | platform.team+compliance@bee.awesome          |

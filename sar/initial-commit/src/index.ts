@@ -9,10 +9,12 @@ const bootstrap = async () => {
     "Hi there! this process will set up org-formation within your organization. i'm excited. "
   );
 
+  const templatePackageUrl = process.env["TEMPLATE_PACKAGE_URL"];
   const buildAcctRootEmail = process.env["BUILD_ACCT_ROOTEMAIL"];
   const buildAcctName = process.env["BUILD_ACCT_NAME"]
     ? process.env["BUILD_ACCT_NAME"]
-    : "Orgformation Build";
+    : "Organization Build Account";
+
   const crossAccountRoleName = process.env["X_ACCT_ROLE_NAME"]
     ? process.env["X_ACCT_ROLE_NAME"]
     : "OrganizationAccountAccessRole";
@@ -60,7 +62,8 @@ const bootstrap = async () => {
   ConsoleUtil.LogInfo("Step 3: initializing org-formation ...");
   const initSucceeded = await performBootstrap(
     buildAccountId,
-    crossAccountRoleName
+    crossAccountRoleName,
+    templatePackageUrl
   );
   if (!initSucceeded) {
     process.exitCode = 1;

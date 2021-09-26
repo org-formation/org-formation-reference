@@ -6,7 +6,7 @@ Organization:
   ManagementAccount:
     Type: OC::ORG::MasterAccount
     Properties:
-      Alias: "{{organization-name}}-management"
+      Alias: "{{ResourcePrefix}}-management"
       RootEmail: "{{management-acct-root-email}}"
       AccountName: Management Account
       AccountId: "{{management-account-id}}"
@@ -54,7 +54,7 @@ Organization:
   SecurityAccount:
     Type: OC::ORG::Account
     Properties:
-      Alias: "{{organization-name}}-security"
+      Alias: "{{ResourcePrefix}}-security"
       AccountName: Security Account
       RootEmail: "{{security-acct-root-email}}"
       Tags:
@@ -64,7 +64,7 @@ Organization:
   LogArchiveAccount:
     Type: OC::ORG::Account
     Properties:
-      Alias: "{{organization-name}}-log-archive"
+      Alias: "{{ResourcePrefix}}-log-archive"
       AccountName: Log Archive Account
       RootEmail: "{{logarchive-acct-root-email}}"
       Tags:
@@ -74,7 +74,7 @@ Organization:
   OrgBuildAccount:
     Type: OC::ORG::Account
     Properties:
-      Alias: "{{organization-name}}-org-build"
+      Alias: "{{ResourcePrefix}}-org-build"
       AccountName: Organization Build Account
       RootEmail: "{{orgbuild-acct-root-email}}"
       Tags:

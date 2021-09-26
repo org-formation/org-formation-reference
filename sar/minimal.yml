@@ -4,13 +4,13 @@ Transform: "AWS::Serverless-2016-10-31"
 
 Metadata:
   AWS::ServerlessRepo::Application:
-    Name: org-formation-ref
+    Name: org-formation-minimal
     Description: Organization Formation Reference
     Author: Org Formation
     SpdxLicenseId: Apache-2.0
     Labels: ["org-formation", "multi-account", "cicd", "devops"]
     HomePageUrl: https://github.com/org-formation/org-formation-reference
-    SemanticVersion: 0.0.1
+    SemanticVersion: 1.0.0
     SourceCodeUrl: https://github.com/org-formation/org-formation-reference
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -28,9 +28,9 @@ Metadata:
       - Label:
           default: "Organization Formation"
         Parameters:
-          - formationResourcePrefix
-          - formationRepositoryName
-          - formationStateBucketName
+          - buildAccountRootEmail
+          - buildAccountName
+          - crossAccountRoleName
 
 Parameters:
   resourcePrefix:
@@ -42,13 +42,6 @@ Parameters:
     Default: "YES"
     AllowedValues: ["YES", "NO"]
     Description: Should the Bootstrapping process clean itself up?
-
-  # BuildAccount:
-  #   Type: String
-  #   Default: "Create New Account"
-  #   AllowedValues:
-  #     ["Use Management Account", "Use Existing Account", "Create New Account"]
-  #   Description: Should we use a dedicated build account for the eventual org-formation setup?
 
   buildAccountRootEmail:
     Type: String
@@ -394,20 +387,6 @@ Resources:
             Value: !Ref buildAccountName
           - Name: X_ACCT_ROLE_NAME
             Value: !Ref crossAccountRoleName
-          # - Name: BUILD_ACCT_NAME
-          #   Value: !Ref buildAccountName
-          # - Name: BUILD_ACCT_ID
-          #   Value: !Ref buildAccountId
-          # - Name: USE_BUILD_ACCT
-          #   Value: !Ref BuildAccount
-          # - Name: BOOTSTRAP_CLEANUP
-          #   Value: !Ref bootstrapCleanup
-          # - Name: FORMATION_RES_PREFIX
-          #   Value: !Ref formationResourcePrefix
-          # - Name: FORMATION_REPO_NAME
-          #   Value: !Ref formationRepositoryName
-          # - Name: BOOTSTRAP_BUCKET_NAME
-          #   Value: !Ref formationStateBucketName
       QueuedTimeoutInMinutes: 480
       ServiceRole: !Ref OrgBuildRole
       Source:
