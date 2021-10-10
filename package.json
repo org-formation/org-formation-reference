@@ -28,5 +28,7 @@
     "url": "https://github.com/org-formation/org-formation-reference/issues"
   },
   "homepage": "https://github.com/org-formation/org-formation-reference#readme",
-  "dependencies": {}
+  "dependencies": {
+    "aws-organization-formation": "^0.9.17"
+  }
 }
