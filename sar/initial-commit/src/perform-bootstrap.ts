@@ -4,7 +4,9 @@ import { ConsoleUtil } from "aws-organization-formation/dist/src/util/console-ut
 export const performBootstrap = async (
   buildAccountId: string,
   crossAccountRoleName: string,
-  templatePackageUrl: string | undefined
+  templatePackageUrl: string | undefined,
+  logicalNameToIdMap: Record<string, string>,
+  logicalNameToRootEmailMap: Record<string, string>
 ): Promise<boolean> => {
   try {
     return performAndRetryIfNeeded(async () => {
@@ -22,6 +24,8 @@ export const performBootstrap = async (
         delegateToBuildAccount: true,
         region: undefined as unknown as string,
         templatePackageUrl,
+        logicalNameToIdMap,
+        logicalNameToRootEmailMap,
       });
       return true;
     });

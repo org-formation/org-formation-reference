@@ -4,7 +4,7 @@ Transform: "AWS::Serverless-2016-10-31"
 
 Metadata:
   AWS::ServerlessRepo::Application:
-    Name: org-formation-full
+    Name: org-formation-reference
     Description: Organization Formation Reference (full)
     Author: Org Formation
     SpdxLicenseId: Apache-2.0
@@ -12,45 +12,27 @@ Metadata:
     HomePageUrl: https://github.com/org-formation/org-formation-reference
     SemanticVersion: 1.0.0
     SourceCodeUrl: https://github.com/org-formation/org-formation-reference
-  AWS::CloudFormation::Interface:
-    ParameterGroups:
-      - Label:
-          default: "Organization Formation"
-        Parameters:
-          - resourcePrefix
-          - crossAccountRoleName
-      - Label:
-          default: "Accounts"
-        Parameters:
-          - buildAccountRootEmail
-          - securityAccountRootEmail
-          - logArchiveAccountRootEmail
 
 Parameters:
-  resourcePrefix:
+  ResourcePrefix:
     Type: String
     Default: "orgformation-bootstrap"
+    Description: The prefix used for AWS created by this application
 
-  # bootstrapCleanup:
-  #   Type: String
-  #   Default: "YES"
-  #   AllowedValues: ["YES", "NO"]
-  #   Description: Should the Bootstrapping process clean itself up?
-
-  crossAccountRoleName:
+  CrossAccountRoleName:
     Type: String
     Default: "OrganizationAccountAccessRole"
-    Description: For new accounts that that will be created, what would be the cross account access role name?
+    Description: The name of the IAM Role used for cross account access within the AWS Organization
 
-  buildAccountRootEmail:
+  BuildAccountRootEmail:
     Type: String
     Description: The root email of the account you would like to use as build account
 
-  securityAccountRootEmail:
+  SecurityAccountRootEmail:
     Type: String
     Description: The root email of the account you would like to use as security account
 
-  logArchiveAccountRootEmail:
+  LogArchiveAccountRootEmail:
     Type: String
     Description: The root email of the account you would like to use as log archive account
 
@@ -59,7 +41,7 @@ Resources:
     Type: "AWS::Logs::LogGroup"
     Properties:
       RetentionInDays: 7
-      LogGroupName: !Sub "/codebuild/${resourcePrefix}-build"
+      LogGroupName: !Sub "/codebuild/${ResourcePrefix}-build"
 
   OrgBuildRole:
     Type: AWS::IAM::Role
@@ -76,7 +58,7 @@ Resources:
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/AdministratorAccess" # see: https://github.com/org-formation/org-formation-cli/blob/master/docs/least-priviledge.md
       Policies:
-        - PolicyName: !Sub "${resourcePrefix}-build-service-role-policy"
+        - PolicyName: !Sub "${ResourcePrefix}-build-service-role-policy"
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -117,7 +99,7 @@ Resources:
               - sts:AssumeRole
       Path: /
       Policies:
-        - PolicyName: !Sub "${resourcePrefix}-codepipeline-service-role-policy"
+        - PolicyName: !Sub "${ResourcePrefix}-codepipeline-service-role-policy"
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -226,7 +208,7 @@ Resources:
   OrgRepo:
     Type: AWS::CodeCommit::Repository
     Properties:
-      RepositoryName: !Sub "${resourcePrefix}-repo"
+      RepositoryName: !Sub "${ResourcePrefix}-repo"
       RepositoryDescription: AWS Organization Formation repository
       Code:
         BranchName: main
@@ -254,7 +236,7 @@ Resources:
       ArtifactStore:
         Type: S3
         Location: !Ref OrgFormationInitPipeline
-      Name: !Sub "${resourcePrefix}-pipeline"
+      Name: !Sub "${ResourcePrefix}-pipeline"
       RoleArn: !GetAtt OrgPipelineRole.Arn
       Stages:
         - Name: Source
@@ -288,7 +270,7 @@ Resources:
               OutputArtifacts:
                 - Name: BuildArtifact
               Configuration:
-                ProjectName: !Ref OrgBuildProject
+                ProjectName: !Ref Accounts
               RunOrder: 1
 
   OrgPipelineEventRule:
@@ -310,7 +292,7 @@ Resources:
             - branch
           referenceName:
             - main
-      Name: !Sub "${resourcePrefix}-pipeline-event-rule"
+      Name: !Sub "${ResourcePrefix}-pipeline-event-rule"
       State: ENABLED
       Targets:
         - Arn: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${OrgPipeline}
@@ -332,7 +314,7 @@ Resources:
       Description: !Sub Used to trigger the pipeline attached to the ${OrgRepo.Name} repository
       Path: /
       Policies:
-        - PolicyName: !Sub ${resourcePrefix}-pipeline-event-rule-role-policy
+        - PolicyName: !Sub ${ResourcePrefix}-pipeline-event-rule-role-policy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -342,10 +324,11 @@ Resources:
                 Resource:
                   - !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${OrgPipeline}
 
-  OrgBuildProject:
+# renaming the logical name here seems the only way to influence the SAR parameter group label. hence this weird name here
+  Accounts:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: !Sub "${resourcePrefix}-build"
+      Name: !Sub "${ResourcePrefix}-build"
       Description: AWS Organization Formation Build Project
       Artifacts: { Type: NO_ARTIFACTS }
       Environment:
@@ -355,13 +338,15 @@ Resources:
         ImagePullCredentialsType: CODEBUILD
         EnvironmentVariables:
           - Name: BUILD_ACCT_ROOTEMAIL
-            Value: !Ref buildAccountRootEmail
+            Value: !Ref BuildAccountRootEmail
           - Name: LOGARCHIVE_ACCT_ROOTEMAIL
-            Value: !Ref logArchiveAccountRootEmail
+            Value: !Ref LogArchiveAccountRootEmail
           - Name: SECURITY_ACCT_ROOTEMAIL
-            Value: !Ref securityAccountRootEmail
+            Value: !Ref SecurityAccountRootEmail
           - Name: X_ACCT_ROLE_NAME
-            Value: !Ref crossAccountRoleName
+            Value: !Ref CrossAccountRoleName
+          - Name: TEMPLATE_PACKAGE_URL
+            Value: https://org-formation-reference.s3.amazonaws.com/org-formation-reference.zip
       QueuedTimeoutInMinutes: 480
       ServiceRole: !Ref OrgBuildRole
       Source:
