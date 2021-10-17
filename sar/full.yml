@@ -15,10 +15,6 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: "Bootstrapping"
-        Parameters:
-          - bootstrapCleanup
-      - Label:
           default: "Organization Formation"
         Parameters:
           - resourcePrefix
@@ -35,11 +31,11 @@ Parameters:
     Type: String
     Default: "orgformation-bootstrap"
 
-  bootstrapCleanup:
-    Type: String
-    Default: "YES"
-    AllowedValues: ["YES", "NO"]
-    Description: Should the Bootstrapping process clean itself up?
+  # bootstrapCleanup:
+  #   Type: String
+  #   Default: "YES"
+  #   AllowedValues: ["YES", "NO"]
+  #   Description: Should the Bootstrapping process clean itself up?
 
   crossAccountRoleName:
     Type: String
@@ -48,15 +44,15 @@ Parameters:
 
   buildAccountRootEmail:
     Type: String
-    Description: What is the root email of the account you would like to use as build account
+    Description: The root email of the account you would like to use as build account
 
   securityAccountRootEmail:
     Type: String
-    Description: What is the root email of the account you would like to use as security account
+    Description: The root email of the account you would like to use as security account
 
   logArchiveAccountRootEmail:
     Type: String
-    Description: What is the root email of the account you would like to use as log archive account
+    Description: The root email of the account you would like to use as log archive account
 
 Resources:
   OrgBuildLogGroup:
@@ -68,7 +64,6 @@ Resources:
   OrgBuildRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub "${resourcePrefix}-build-service-role"
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -112,7 +107,6 @@ Resources:
   OrgPipelineRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub "${resourcePrefix}-codepipeline-service-role"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -347,7 +341,6 @@ Resources:
                   - codepipeline:StartPipelineExecution
                 Resource:
                   - !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${OrgPipeline}
-      RoleName: !Sub ${resourcePrefix}-pipeline-event-rule-role
 
   OrgBuildProject:
     Type: AWS::CodeBuild::Project

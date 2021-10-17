@@ -11,8 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-organization-formation": "^0.9.16",
+    "aws-organization-formation": "^0.9.19-alpha.1",
     "nunjucks": "^3.2.3",
-    "ts-node": "^10.1.0"
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.3"
   }
 }
