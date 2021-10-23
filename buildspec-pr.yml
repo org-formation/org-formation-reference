@@ -2,7 +2,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - npm ci
+      - npm i
       - echo installed dependencies
       - npx org-formation -v
       - pip install cfn-lint

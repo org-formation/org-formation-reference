@@ -20,12 +20,13 @@ SeviceControlPolicies:
   DependsOn: [OrganizationBuild, Types]
   Path: ./templates/010-scps/_tasks.yml
 
-
 AlternateContacts:
-  Type: include
+  Type: update-stacks
   Skip: true # once you updated the contact information in `./alternate-contacts.yml` you can remove this line
   DependsOn: [OrganizationBuild, Types]
-  Path: ./alternate-contacts.yml
+  Template: ./alternate-contacts.yml
+  StackName: !Sub '${resourcePrefix}-alternate-contacts'
+  DefaultOrganizationBindingRegion: us-east-1
 
 SecureDefaults:
   Type: include

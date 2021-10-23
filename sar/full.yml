@@ -36,6 +36,15 @@ Parameters:
     Type: String
     Description: The root email of the account you would like to use as log archive account
 
+  EmailForBudgetAlarms:
+    Type: String
+    Description: Email used for sending budget alarms
+
+  PrimaryAwsRegion:
+    Type: String
+    DefaultValue: !Ref AWS::Region
+    Description: Primary AWS Region for your organization setup
+
 Resources:
   OrgBuildLogGroup:
     Type: "AWS::Logs::LogGroup"
@@ -347,6 +356,14 @@ Resources:
             Value: !Ref CrossAccountRoleName
           - Name: TEMPLATE_PACKAGE_URL
             Value: https://org-formation-reference.s3.amazonaws.com/org-formation-reference.zip
+          - Name: EMAIL_FOR_BUDGET_ALARMS
+            Value: !Ref EmailForBudgetAlarms
+          - Name: PRIMARY_REGION
+            Value: !Ref PrimaryAwsRegion
+          - Name: RESOURCE_PREFIX
+            Value: !Ref ResourcePrefix
+          - Name: MGMT_ACCT_ID
+            Value: !Ref AWS::AccountId
       QueuedTimeoutInMinutes: 480
       ServiceRole: !Ref OrgBuildRole
       Source:

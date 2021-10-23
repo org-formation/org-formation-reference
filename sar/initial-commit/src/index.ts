@@ -148,12 +148,23 @@ const bootstrap = async () => {
   ConsoleUtil.LogInfo(`- AWS OU prod exists`);
 
   ConsoleUtil.LogInfo("Step 3: initializing org-formation ...");
+
+  const packageParameters: Record<string, string> = {
+    EmailForBudgetAlarms:
+      process.env["EMAIL_FOR_BUDGET_ALARMS"] ?? "someone@your-org.com",
+    PrimaryAwsRegion: process.env["PRIMARY_REGION"] ?? "us-east-1",
+    ResourcePrefix: process.env["RESOURCE_PREFIX"] ?? "orgformation",
+    StateBucketName: "organization-formation-" + buildAccountId,
+    ManagementAcctId: process.env["MGMT_ACCT_ID"] as string,
+  };
+
   const initSucceeded = await performBootstrap(
     buildAccountId,
     crossAccountRoleName,
     templatePackageUrl,
     logicalNameToIdMap,
-    logicalNameToRootEmailMap
+    logicalNameToRootEmailMap,
+    packageParameters
   );
 
   if (!initSucceeded) {

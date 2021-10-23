@@ -6,6 +6,10 @@
       "required": true
     },
     {
+      "name": "BuildRoleManagementAcctStackName",
+      "required": true
+    },
+    {
       "name": "StateBucketName",
       "required": true
     },

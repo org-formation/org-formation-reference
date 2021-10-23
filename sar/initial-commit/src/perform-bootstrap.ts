@@ -6,7 +6,8 @@ export const performBootstrap = async (
   crossAccountRoleName: string,
   templatePackageUrl: string | undefined,
   logicalNameToIdMap: Record<string, string>,
-  logicalNameToRootEmailMap: Record<string, string>
+  logicalNameToRootEmailMap: Record<string, string>,
+  packageParameters: Record<string, string>
 ): Promise<boolean> => {
   try {
     return performAndRetryIfNeeded(async () => {
@@ -26,6 +27,7 @@ export const performBootstrap = async (
         templatePackageUrl,
         logicalNameToIdMap,
         logicalNameToRootEmailMap,
+        packageParameters,
       });
       return true;
     });
