@@ -30,7 +30,7 @@ EbsEncryptionDefaultsRp:
 OrganizationsPolicyRp:
   Type: register-type
   ResourceType: "Community::Organizations::Policy"
-  SchemaHandlerPackage: !Sub "s3://${catalogBucket}/community-organizations-policy-0.2.1.zip"
+  SchemaHandlerPackage: !Sub "s3://${catalogBucket}/community-organizations-policy-0.2.2.zip"
   MaxConcurrentTasks: 100
   OrganizationBinding:
     IncludeMasterAccount: true
