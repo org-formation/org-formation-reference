@@ -20,7 +20,7 @@ NoDefaultVpcRp:
 EbsEncryptionDefaultsRp:
   Type: register-type
   ResourceType: "Community::Organizations::EbsEncryptionDefaults"
-  SchemaHandlerPackage: !Sub "s3://${catalogBucket}/community-ec2-ebsencryptiondefaults-0.2.0.zip"
+  SchemaHandlerPackage: !Sub "s3://${catalogBucket}/community-ec2-ebsencryptiondefaults-0.2.1.zip"
   MaxConcurrentTasks: 100
   OrganizationBinding:
     IncludeMasterAccount: true
@@ -39,7 +39,7 @@ OrganizationsPolicyRp:
 AccountPublicAccessBlockRp:
   Type: register-type
   ResourceType: "Community::S3::PublicAccessBlock"
-  SchemaHandlerPackage: !Sub "s3://${catalogBucket}/community-s3-publicaccessblock-0.2.0.zip"
+  SchemaHandlerPackage: !Sub "s3://${catalogBucket}/community-s3-publicaccessblock-0.2.2.zip"
   MaxConcurrentTasks: 100
   OrganizationBinding:
     IncludeMasterAccount: true
