@@ -1,9 +1,18 @@
 the following template keys must be replaced
 
 * {{organization-name}}
-* {{email-domain}}
 * {{management-account-id}}
+* {{management-root-email-address}}
+* {{security-root-email-address}}
+* {{log-archive-root-email-address}}
+* {{budget-alarm-email-address}}
 * {{build-account-id}}
 * {{state-bucket-name}}
-* {{state-object}}
 * {{primary-aws-region}}
+
+Replace the following template keys if AWS SSO is being used
+
+* {{sso-admin-group-id}}
+* {{sso-auditor-group-id}}
+* {{sso-developer-group-id}}
+* {{sso-supporter-group-id}}

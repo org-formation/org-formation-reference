@@ -1,4 +1,4 @@
 organizationFile = ./src/organization.yml
 masterAccountId = {{management-account-id}}
-stateObject = {{state-object}}
+stateObject = state.json
 stateBucketName = {{state-bucket-name}}
