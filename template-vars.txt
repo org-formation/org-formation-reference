@@ -12,6 +12,7 @@ the following template keys must be replaced
 
 Replace the following template keys if AWS SSO is being used
 
+* {{sso-instance-arn}}
 * {{sso-admin-group-id}}
 * {{sso-auditor-group-id}}
 * {{sso-developer-group-id}}
