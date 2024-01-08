@@ -127,7 +127,7 @@ npx org-formation update ./src/organization.yml --verbose
 ```
 3. Create the role that the `org-formation` uses inside of the Management Account
 ```
-aws cloudformation create-stack --stack-name org-formation-role --template-body file://src/templates/000-org-build/org-formation-role.yml
+aws cloudformation create-stack --stack-name org-formation-role --template-body file://src/templates/000-org-build/role.yml --capabilities CAPABILITY_NAMED_IAM
 ```
 4. Zip this local repository into `000-org-build` to be used as the initial commit for the OrgBuild CodeCommit repository. From the top level of this repository, execute:
 ```
