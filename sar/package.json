@@ -1,0 +1,13 @@
+{
+  "name": "bootstrap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "bootstrap:zip": "cd initial-commit && npx tsc && zip -vr initial-commit.zip . -x \"node_modules/*\"",
+    "bootstrap:upload": "cd initial-commit && aws s3 cp initial-commit.zip s3://org-formation-reference/initial-commit.zip && aws s3api put-object-acl --bucket org-formation-reference --key initial-commit.zip --acl public-read"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {}
+}

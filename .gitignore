@@ -2,5 +2,7 @@ node_modules/
 .serverless/
 .DS_Store
 .printed-stacks/
-.vscode/launch.json
+.vscode/
 initial-commit.zip
+reference.zip
+sar/initial-commit/bin/

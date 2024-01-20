@@ -1,0 +1,22 @@
+{
+  "name": "org-formation-bootstrap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bootstrap.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "refzip": "",
+    "ref:upload": "aws s3 cp initial-commit.zip s3://org-formation-reference/initial-commit.zip"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-organization-formation": "^0.9.19-alpha.1",
+    "nunjucks": "^3.2.3",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.3"
+  }
+}

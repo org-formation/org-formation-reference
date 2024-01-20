@@ -14,7 +14,7 @@ Parameters:
 OrganizationFormationRoleMaster:
   Type: update-stacks
   Template: ./role.yml
-  StackName: !Sub '${appName}-role'
+  StackName: '{{BuildRoleManagementAcctStackName}}'
   StackDescription: Organization Formation Build Infrastructure (IAM Role used for cross account access by build process)
   TerminationProtection: true
   DefaultOrganizationBindingRegion: !Ref primaryRegion

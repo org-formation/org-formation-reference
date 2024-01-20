@@ -1,11 +1,11 @@
 # if you use this resource prefix in all stacks deployed by this project they are easily identifiable
 resourcePrefix:
   Type: String
-  Default: {{organization-name}}
+  Default: {{ResourcePrefix}}
 
 primaryRegion:
   Type: String
-  Default: {{primary-aws-region}}
+  Default: {{PrimaryAwsRegion}}
 
 organizationPrincipalId:
   Type: String
@@ -15,4 +15,4 @@ organizationPrincipalId:
 allRegions:
   Type: List<String>
   Default:
-    - {{primary-aws-region}}
+    - {{PrimaryAwsRegion}}

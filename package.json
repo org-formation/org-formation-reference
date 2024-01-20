@@ -8,7 +8,8 @@
     "print-tasks": "npx org-formation print-tasks ./src/_tasks.yml --output yaml --max-concurrent-stacks 100 --max-concurrent-tasks 100",
     "perform-tasks": "npx org-formation perform-tasks ./src/_tasks.yml --max-concurrent-stacks 50 --max-concurrent-tasks 1",
     "validate-tasks": "npx org-formation validate-tasks ./src/_tasks.yml --failed-tasks-tolerance 0  --max-concurrent-stacks 100 --max-concurrent-tasks 100",
-    "cfn-lint": "if [ -d .printed-stacks ]; then cfn-lint ./.printed-stacks/**/*.yaml -i W2001,E3001,E1019,W1020,W2509,E3021,W8001; else echo skipping linting; fi"
+    "cfn-lint": "if [ -d .printed-stacks ]; then cfn-lint ./.printed-stacks/**/*.yaml -i W2001,E3001,E1019,W1020,W2509,E3021,W8001; else echo skipping linting; fi",
+    "package-reference": "rm org-formation-reference.zip || echo ok && zip -r org-formation-reference.zip src/* buildspec* package* .org-formationrc template.json -x src/organization.yml && aws s3 cp org-formation-reference.zip s3://org-formation-reference/org-formation-reference.zip && aws s3api put-object-acl --bucket org-formation-reference --key org-formation-reference.zip --acl public-read && rm org-formation-reference.zip"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,6 @@
   },
   "homepage": "https://github.com/org-formation/org-formation-reference#readme",
   "dependencies": {
-    "aws-organization-formation": "^0.9.14"
+    "aws-organization-formation": "^0.9.19-beta.1"
   }
 }

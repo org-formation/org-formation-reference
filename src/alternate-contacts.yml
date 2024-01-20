@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+# alternate contacts can only be set in us-east-1.
+DefaultOrganizationBindingRegion: us-east-1
+
+Resources:
+  BillingContact:
+    Type: 'Community::Account::AlternateContact'
+    OrganizationBinding:
+      # This binding assumes all AWS accounts in the org have the same contacts
+      # You can add different 'AlternateContact' resources in this file and target different accounts
+      # For more information see: https://github.com/org-formation/org-formation-cli/blob/master/docs/cloudformation-resources.md#organizationbinding-where-to-create-which-resource
+      IncludeMasterAccount: true
+      Account: '*'
+    Properties:
+      AlternateContactType: BILLING
+      Title: CFO
+      Name: Bill
+      PhoneNumber: +1 123 123 123 111
+      EmailAddress: bill@company.com
+
+  OperationsContact:
+    Type: 'Community::Account::AlternateContact'
+    OrganizationBinding:
+      # This binding assumes all AWS accounts in the org have the same contacts
+      # You can add different 'AlternateContact' resources in this file and target different accounts
+      # For more information see: https://github.com/org-formation/org-formation-cli/blob/master/docs/cloudformation-resources.md#organizationbinding-where-to-create-which-resource
+      IncludeMasterAccount: true
+      Account: '*'
+    Properties:
+      AlternateContactType: OPERATIONS
+      Title: COO
+      Name: Oliver
+      PhoneNumber: +1 123 123 123 222
+      EmailAddress: oliver@company.com
+
+  SecurityContact:
+    Type: 'Community::Account::AlternateContact'
+    OrganizationBinding:
+      # This binding assumes all AWS accounts in the org have the same contacts
+      # You can add different 'AlternateContact' resources in this file and target different accounts
+      # For more information see: https://github.com/org-formation/org-formation-cli/blob/master/docs/cloudformation-resources.md#organizationbinding-where-to-create-which-resource
+      IncludeMasterAccount: true
+      Account: '*'
+    Properties:
+      AlternateContactType: SECURITY
+      Title: CISO
+      Name: Sam
+      PhoneNumber: +1 123 123 123 333
+      EmailAddress: sam@company.com

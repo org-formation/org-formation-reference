@@ -1,0 +1,94 @@
+{
+  "organizationFilePath": "/src/organization.yml",
+  "parameters": [
+    {
+      "name": "ManagementAcctId",
+      "required": true
+    },
+    {
+      "name": "BuildRoleManagementAcctStackName",
+      "required": true
+    },
+    {
+      "name": "StateBucketName",
+      "required": true
+    },
+    {
+      "name": "ResourcePrefix",
+      "required": true
+    },
+    {
+      "name": "PrimaryAwsRegion",
+      "required": true
+    },
+    {
+      "name": "EmailForBudgetAlarms",
+      "required": true
+    }
+  ],
+  "templateGenerationSettings": {
+    "predefinedOUs": [
+      {
+        "logicalName": "ProdOu",
+        "properties": {
+          "OrganizationalUnitName": "prod"
+        }
+      },
+      {
+        "logicalName": "SdlcOu",
+        "properties": {
+          "OrganizationalUnitName": "sdlc"
+        }
+      },
+      {
+        "logicalName": "SharedOu",
+        "properties": {
+          "OrganizationalUnitName": "shared",
+          "Accounts": [
+            "!Ref OrgBuildAccount",
+            "!Ref SecurityAccount",
+            "!Ref LogArchiveAccount"
+          ]
+        }
+      },
+      {
+        "logicalName": "SuspendedOu",
+        "properties": {
+          "OrganizationalUnitName": "suspended"
+        }
+      }
+    ],
+    "predefinedAccounts": [
+      {
+        "logicalName": "SecurityAccount",
+        "properties": {
+          "AccountName": "Security Account",
+          "Tags": {
+            "budget-alarm-threshold": 200,
+            "budget-alarm-threshold-email-recipient": "{{EmailForBudgetAlarms}}"
+          }
+        }
+      },
+      {
+        "logicalName": "LogArchiveAccount",
+        "properties": {
+          "AccountName": "Log Archive Account",
+          "Tags": {
+            "budget-alarm-threshold": 200,
+            "budget-alarm-threshold-email-recipient": "{{EmailForBudgetAlarms}}"
+          }
+        }
+      },
+      {
+        "logicalName": "OrgBuildAccount",
+        "properties": {
+          "AccountName": "Organization Build Account",
+          "Tags": {
+            "budget-alarm-threshold": 200,
+            "budget-alarm-threshold-email-recipient": "{{EmailForBudgetAlarms}}"
+          }
+        }
+      }
+    ]
+  }
+}

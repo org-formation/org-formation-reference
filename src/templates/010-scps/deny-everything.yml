@@ -1,0 +1,18 @@
+AWSTemplateFormatVersion: "2010-09-09-OC"
+
+Resources:
+  Scp:
+    Type: Community::Organizations::Policy
+    Properties:
+      Name: DenyEverything
+      Description: Denies all permissions
+      PolicyType: SERVICE_CONTROL_POLICY
+      TargetIds:
+        - Fn::EnumTargetAccounts TargetBinding ${account}
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: DenyEverything
+            Effect: Deny
+            Action: "*"
+            Resource: "*"

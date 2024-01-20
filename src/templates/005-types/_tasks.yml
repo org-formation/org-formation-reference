@@ -64,6 +64,16 @@ EnableAWSServiceRp:
     IncludeMasterAccount: true
     Region: us-east-1 # Only compatible to us-east-1 region
 
+AlternateContactsRP:
+  Type: register-type
+  SchemaHandlerPackage: s3://community-resource-provider-catalog/community-account-alternatecontact-0.1.0.zip
+  ResourceType: 'Community::Account::AlternateContact'
+  MaxConcurrentTasks: 10
+  OrganizationBinding:
+    IncludeMasterAccount: true
+    Account: '*'
+    Region: us-east-1 # Only compatible to us-east-1 region
+
 PasswordPolicyRp:
   Type: register-type
   ResourceType: "Community::IAM::PasswordPolicy"
@@ -112,3 +122,4 @@ SsoAssignmentGroupRp:
   OrganizationBinding:
     IncludeMasterAccount: true
     Region: !Ref primaryRegion
+

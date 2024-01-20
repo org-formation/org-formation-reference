@@ -52,3 +52,13 @@ DenyLargeEc2Instances:
   OrganizationBindings:
     TargetBinding:
       Account: "*"
+
+DenyEverything:
+  Type: update-stacks
+  Template: ./deny-everything.yml
+  StackName: !Sub "${resourcePrefix}-deny-everything"
+  DefaultOrganizationBindingRegion: us-east-1
+  DefaultOrganizationBinding:
+  OrganizationBindings:
+    TargetBinding:
+      OrganizationalUnit: !Ref SuspendedOu
