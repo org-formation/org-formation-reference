@@ -68,6 +68,7 @@ SsoAdministratorSupporter:
     instanceArn: !Ref instanceArn
     principalId: !Ref supporterGroup
     permissionSetArn: !CopyValue [ !Sub '${resourcePrefix}-${appName}-admin-permission-set-arn' ]
+    managedPolicies: [ 'arn:aws:iam::aws:policy/AdministratorAccess' ]
 
 SsoWriter:
   Type: update-stacks
@@ -170,3 +171,4 @@ SsoViewerSupporter:
     instanceArn: !Ref instanceArn
     principalId: !Ref supporterGroup
     permissionSetArn: !CopyValue [ !Sub '${resourcePrefix}-${appName}-viewer-permission-set-arn' ]
+    managedPolicies: [ 'arn:aws:iam::aws:policy/job-function/ViewOnlyAccess' ]
