@@ -1,6 +1,16 @@
 Parameters:
   <<: !Include '../../_parameters.yml'
 
+# include that contains the tasks for registering cloudformation types.
+# registering a type takes long, hence the 'MaxConcurrentTasks: 10'
+RegisterTypes:
+  Type: include
+  Path: register-type-tasks.yml
+  MaxConcurrentTasks: 10
+  Parameters:
+    region: !Ref primaryRegion
+    allRegions: !Ref allRegions
+
 PasswordPolicy:
   Type: update-stacks
   Template: ./password-policy.yml
