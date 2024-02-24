@@ -6,13 +6,13 @@ Parameters:
 
 Resources:
   Scp:
-    Type: Community::Organizations::Policy
+    Type: AWS::Organizations::Policy
     Properties:
       Description: prevent changes to org formation infrastructure
       Name: SelfProtect
-      PolicyType: SERVICE_CONTROL_POLICY
+      Type: SERVICE_CONTROL_POLICY
       TargetIds: !Ref targetIds
-      PolicyDocument:
+      Content:
         Version: "2012-10-17"
         Statement:
           - Sid: DenyChangeOfOrgRole

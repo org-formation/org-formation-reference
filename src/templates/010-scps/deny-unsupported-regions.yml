@@ -9,13 +9,13 @@ Parameters:
 
 Resources:
   Scp:
-    Type: Community::Organizations::Policy
+    Type: AWS::Organizations::Policy
     Properties:
       Description: Restricts the use of unsupported regions
       Name: DenyUnsupportedRegions
-      PolicyType: SERVICE_CONTROL_POLICY
+      Type: SERVICE_CONTROL_POLICY
       TargetIds: !Ref targetIds
-      PolicyDocument:
+      Content:
         Version: "2012-10-17"
         Statement:
           - Sid: DenyUnsupportedRegions

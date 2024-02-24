@@ -2,14 +2,14 @@ AWSTemplateFormatVersion: "2010-09-09-OC"
 
 Resources:
   Scp:
-    Type: Community::Organizations::Policy
+    Type: AWS::Organizations::Policy
     Properties:
       Description: Restricts the use of the Root account
       Name: DenyRootAccess
-      PolicyType: SERVICE_CONTROL_POLICY
+      Type: SERVICE_CONTROL_POLICY
       TargetIds:
         - Fn::EnumTargetAccounts TargetBinding ${account}
-      PolicyDocument:
+      Content:
         Version: "2012-10-17"
         Statement:
           - Sid: DenyRootUser
