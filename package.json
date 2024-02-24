@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "update": "npx org-formation update ./src/organization.yml --verbose",
     "print-tasks": "npx org-formation print-tasks ./src/_tasks.yml --output yaml --max-concurrent-stacks 100 --max-concurrent-tasks 100",
     "perform-tasks": "npx org-formation perform-tasks ./src/_tasks.yml --max-concurrent-stacks 50 --max-concurrent-tasks 1",
     "validate-tasks": "npx org-formation validate-tasks ./src/_tasks.yml --failed-tasks-tolerance 0  --max-concurrent-stacks 100 --max-concurrent-tasks 100",

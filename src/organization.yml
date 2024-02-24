@@ -8,12 +8,12 @@ Organization:
     Type: OC::ORG::MasterAccount
     Properties:
       Alias: '{{organization-name}}-management'
-      RootEmail: aws+management@{{email-domain}}
+      RootEmail: '{{management-root-email-address}}'
       AccountName: Management Account
       AccountId: '{{management-account-id}}'
       Tags:
         budget-alarm-threshold: 200
-        budget-alarm-threshold-email-recipient: me@{{email-domain}}
+        budget-alarm-threshold-email-recipient: '{{budget-alarm-email-address}}'
 
   OrganizationRoot:
     Type: OC::ORG::OrganizationRoot
@@ -57,20 +57,14 @@ Organization:
     Properties:
       Alias: '{{organization-name}}-security'
       AccountName: Security Account
-      RootEmail: aws+security@{{email-domain}}
-      Tags:
-        budget-alarm-threshold: 200
-        budget-alarm-threshold-email-recipient: security@{{email-domain}}
+      RootEmail: '{{security-root-email-address}}'
 
   LogArchiveAccount:
     Type: OC::ORG::Account
     Properties:
       Alias: '{{organization-name}}-log-archive'
       AccountName: Log Archive Account
-      RootEmail: aws+log-archive@{{email-domain}}
-      Tags:
-        budget-alarm-threshold: 200
-        budget-alarm-threshold-email-recipient: log-archive@{{email-domain}}
+      RootEmail: '{{log-archive-root-email-address}}'
 
   OrgBuildAccount:
     Type: OC::ORG::Account
