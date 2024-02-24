@@ -28,6 +28,6 @@
   },
   "homepage": "https://github.com/org-formation/org-formation-reference#readme",
   "dependencies": {
-    "aws-organization-formation": "^0.9.14"
+    "aws-organization-formation": "^1.0.9"
   }
 }
