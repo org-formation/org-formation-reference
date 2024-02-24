@@ -62,15 +62,13 @@ OrganizationPolicies:
     IncludeMasterAccount: true
     Region: us-east-1
 
-# TODO: should work after this issue is fixed:
-# https://github.com/org-formation/aws-resource-providers/issues/74
-# AccessAnalyzer:
-#   Type: update-stacks
-#   Template: ./access-analyzer.yml
-#   StackName: !Sub '${resourcePrefix}-access-analyzer'
-#   MaxConcurrentStacks: 10
-#   Parameters:
-#     targetId: !Ref SecurityAccount
-#   DefaultOrganizationBinding:
-#     IncludeMasterAccount: true
-#     Region: us-east-1
+AccessAnalyzer:
+  Type: update-stacks
+  Template: ./access-analyzer.yml
+  StackName: !Sub '${resourcePrefix}-access-analyzer'
+  MaxConcurrentStacks: 10
+  Parameters:
+    targetId: !Ref SecurityAccount
+  DefaultOrganizationBinding:
+    IncludeMasterAccount: true
+    Region: us-east-1

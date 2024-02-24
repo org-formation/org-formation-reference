@@ -11,6 +11,7 @@ Resources:
     Type: Community::Organizations::EnableAWSServiceAccess
     Properties:
       ServicePrincipal: access-analyzer.amazonaws.com
+      ResourceId: enable-access-analyzer
 
   AccessAnalyzerDelegatedAdmin:
     Type: Community::Organizations::DelegatedAdmin
