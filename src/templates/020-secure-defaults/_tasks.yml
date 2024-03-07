@@ -8,7 +8,7 @@ RegisterTypes:
   Path: register-type-tasks.yml
   MaxConcurrentTasks: 10
   Parameters:
-    region: !Ref primaryRegion
+    primaryRegion: !Ref primaryRegion
     allRegions: !Ref allRegions
 
 PasswordPolicy:
